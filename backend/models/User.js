@@ -13,7 +13,6 @@ class User {
         this.phone = data.phone;
         this.licenseNumber = data.licenseNumber;
         this.role = data.role || 'customer'; // 'manager', 'owner'
-        this._isPasswordModified = false;
 
         this.createdAt = data.createdAt || new Date().toISOString();
         this.updatedAt = new Date().toISOString();
@@ -79,6 +78,62 @@ class User {
             throw error;
         }
     };
+
+    // Get a user by ID
+    static async findById(id) {
+        try {
+            const userDoc = await userCollection.doc(id).get();
+            if (!userDoc.exists) {
+                return null;
+            }
+        
+            const userData = userDoc.data();
+            return new User(userDoc.id, userData);
+        } catch (error) {
+            console.error('Error finding user for that ID:', error);
+            throw error;
+        }
+    };
+
+    // Update a user
+    static async updateById(id, updateData) {
+        try {
+            const userDoc = await userCollection.doc(id).get();
+
+            if (!userDoc.exists) {
+                return false;
+            }
+            
+            updateData.updatedAt = new Date().toISOString();
+        
+            await userCollection.doc(id).update(updateData);
+        
+            const updatedUser = await User.findById(id);
+            return updatedUser;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    // Delete a user
+    static async deleteById(id) {
+        try {
+            const userDoc = await userCollection.doc(id).get();
+
+            if (!userDoc.exists) {
+                return false;
+            }
+
+            await userCollection.doc(id).delete();
+            return true;
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            throw error;
+        }
+    };
+
 }
+
+
 
 module.exports = User;
