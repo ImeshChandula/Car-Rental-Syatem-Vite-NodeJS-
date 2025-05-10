@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const initializeFirebase = require("./src/config/firebase");
+const initializeFirebase = require("./config/firebase");
 require('dotenv').config();
 
 // connect to firebase
