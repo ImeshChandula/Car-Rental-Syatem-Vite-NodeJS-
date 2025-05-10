@@ -19,7 +19,7 @@ app.use(cookieParser());
 
 //Routes
 app.use("/api/auth", require("./routes/authRoutes"));
-
+app.use("/api/users", require("./routes/userRoutes"));
 
 //  Route handler for the root path
 app.get('/', (req, res) => {

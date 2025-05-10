@@ -63,6 +63,22 @@ class User {
             throw error;
         }
     };
+
+    // Get all users
+    static async findAll() {
+        try {
+            const usersRef = await userCollection.get();
+
+            if (usersRef.empty) {
+                return [];
+            }
+
+            return usersRef.docs.map(doc => new User(doc.id, doc.data()));
+        } catch (error) {
+            console.error('Error finding all users:', error);
+            throw error;
+        }
+    };
 }
 
 module.exports = User;
