@@ -43,8 +43,11 @@ const getAllUsers = async (req, res) => {
 // Update user
 const updateUserById = async (req, res) => {
     try {
+        const userIdToUpdate = req.params.id;
+        const currentUserId = req.user.id;
+
         // Only allow users to update their own profile unless admin
-        if (req.user.role !== 'owner' || req.user.id !== req.params.id) {
+        if (currentUserId !== 'owner' && currentUserId !== userIdToUpdate) {
             return res.status(403).json({ message: 'Not authorized to update this user' });
         }
         
