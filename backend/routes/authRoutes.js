@@ -15,10 +15,10 @@ router.post("/register", validateUser, authController.register);
 //@access  Public
 router.post("/login",  authController.login);
 
-//@route   POST api/auth/me
+//@route   POST api/auth/checkCurrent
 //@desc    Get current user profile(by token)
-//@access  Public
-router.get("/me", authenticateUser,  authController.getCurrentUser);
+//@access  Private
+router.get("/checkCurrent", authenticateUser,  authController.checkCurrent);
 
 
 

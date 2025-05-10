@@ -71,7 +71,7 @@ const login = async (req, res) => {
 
 
 // Get current user profile
-const getCurrentUser = async (req, res) => {
+const checkCurrent = async (req, res) => {
   try {
     const user = req.user;
     user.password = undefined;
@@ -83,4 +83,4 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getCurrentUser };
+module.exports = { register, login, checkCurrent };
