@@ -2,10 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const initializeFirebase = require("./config/firebase");
+const { initializeDefaultSuperAdmin } = require("./config/defaultSuperAccount");
 require('dotenv').config();
 
 // connect to firebase
 initializeFirebase();
+
+initializeDefaultSuperAdmin().then(() => {
+  console.log('Server initialization completed.....\n');
+});
 
 const app = express();
 app.use(express.json());

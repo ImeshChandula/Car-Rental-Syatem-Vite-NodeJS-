@@ -15,7 +15,7 @@ const initializeFirebase = () => {
         storageBucket: process.env.FIREBASE_STORAGE_BUCKET
       });
       
-      console.log('✅ Firebase Admin SDK initialized successfully');
+      console.log('✅ Firebase initialized successfully...');
     }
     return {
       db: admin.firestore(),
