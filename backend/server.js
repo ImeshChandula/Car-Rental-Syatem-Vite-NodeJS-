@@ -18,7 +18,7 @@ app.use(cors({ origin: process.env.FRONTEND_URL || "http://localhost:3000", cred
 app.use(cookieParser());
 
 //Routes
-
+app.use("/api/auth", require("./routes/authRoutes"));
 
 
 //  Route handler for the root path
