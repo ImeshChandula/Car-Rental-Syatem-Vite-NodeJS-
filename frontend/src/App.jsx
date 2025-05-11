@@ -32,8 +32,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path='/' element={<Home/>} />
-        <Route path='/login' element={<Login/>} />
-        <Route path='/register' element={<Register/>} />
+        <Route path='/login' element={!authUser ? <Login/> : <Navigate to="/" />} />
+        <Route path='/register' element={!authUser ? <Register/> : <Navigate to="/" />} />
 
         {/* Protected routes*/}
         <Route path='/owner/dashboard' element={authUser ? <DashboardOwner/> : <Navigate to="/login" />} />

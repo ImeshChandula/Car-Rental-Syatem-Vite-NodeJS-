@@ -23,16 +23,12 @@ const register = async (req, res) => {
             role: user.role,
         };
 
-        const token = generateToken(payload, res);
+        generateToken(payload, res);
         
         // block password displaying
         user.password = undefined;
 
-        res.status(201).json({
-            message: 'User registered successfully',
-            token,
-            user
-        });
+        res.status(201).json({ message: 'User registered successfully',user });
     } catch (error) {
         console.error('Registration error:', error.message);
         res.status(500).json({ message: 'Server Error' });
@@ -62,16 +58,12 @@ const login = async (req, res) => {
             role: user.role,
         };
 
-        const token = generateToken(payload, res); 
+        generateToken(payload, res); 
 
         // block password displaying
         user.password = undefined;
 
-        res.status(201).json({
-            message: 'Login successful',
-            token,
-            user
-        });
+        res.status(201).json({message: 'Login successful', user });
     } catch {
         console.error('Login error:', error.message);
         res.status(500).json({ message: 'Server Error' });
