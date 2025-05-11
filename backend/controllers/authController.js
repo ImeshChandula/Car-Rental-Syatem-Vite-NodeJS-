@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const jwt = require('jsonwebtoken');
+const { generateToken } = require("../utils/utils");
 require('dotenv').config();
 
 
@@ -23,11 +23,7 @@ const register = async (req, res) => {
             role: user.role,
         };
 
-        const token = jwt.sign(
-            payload,
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
-        );
+        const token = generateToken(payload, res);
         
         // block password displaying
         user.password = undefined;
@@ -66,21 +62,32 @@ const login = async (req, res) => {
             role: user.role,
         };
 
-        const token = jwt.sign(
-            payload,
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
-        );
+        const token = generateToken(payload, res); 
 
         // block password displaying
         user.password = undefined;
 
-        res.json({
+        res.status(201).json({
             message: 'Login successful',
             token,
             user
         });
-    } catch {}
+    } catch {
+        console.error('Login error:', error.message);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+const logout = async (req, res) => {
+    try {
+        res.cookie("jwt", "", {maxAge: 0});
+        res.status(201).json({
+            message: 'Logout successful'
+        });
+    } catch (error) {
+        console.error('Logout error:', error.message);
+        res.status(500).json({ message: 'Server Error' });
+    }
 };
 
 
@@ -97,4 +104,4 @@ const checkCurrent = async (req, res) => {
   }
 };
 
-module.exports = { register, login, checkCurrent };
+module.exports = { register, login, logout, checkCurrent };

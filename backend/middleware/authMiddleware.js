@@ -2,26 +2,28 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config();
 
 const authenticateUser = (req, res, next) => {
-    const authHeader = req.header("Authorization");
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")){
-        return res.status(401).json({ message: "No token, Authorization Access Denied" });
-    } 
-
-    const token = authHeader.split(" ")[1]; // Extract token after "Bearer"
-
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
+      //const token = req.cookies.jwt;    //:take token from cookies
+      
+      const authHeader = req.header("Authorization");
 
-        console.log("Authenticated User:", req.user);
+      if (!authHeader || !authHeader.startsWith("Bearer ")){
+        return res.status(401).json({ message: "No token, Authorization Access Denied" });
+      } 
 
-        next();
+      const token = authHeader.split(" ")[1]; // Extract token after "Bearer"
+      
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded;
+
+      console.log("Authenticated User:", req.user);
+
+      next();
     } catch (error) {
-        if (error.name === 'TokenExpiredError') {
+      if (error.name === 'TokenExpiredError') {
         return res.status(401).json({ message: "Token expired" });
-        }
-        res.status(400).json({ message: "Invalid Token" });
+      }
+      res.status(400).json({ message: "Invalid Token" });
     }
 };
 
