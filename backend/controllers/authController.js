@@ -15,12 +15,26 @@ const register = async (req, res) => {
 
         // Create new user
         const user = await User.create(req.body);
+
+        // create JWT token
+        const payload = {
+            id: user.id,
+            username: user.name,
+            role: user.role,
+        };
+
+        const token = jwt.sign(
+            payload,
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
         
         // block password displaying
         user.password = undefined;
 
         res.status(201).json({
             message: 'User registered successfully',
+            token,
             user
         });
     } catch (error) {
