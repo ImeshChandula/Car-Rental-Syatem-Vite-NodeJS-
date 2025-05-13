@@ -36,9 +36,9 @@ function App() {
         <Route path='/register' element={!authUser ? <Register/> : <Navigate to="/" />} />
 
         {/* Protected routes*/}
-        <Route path='/owner/dashboard' element={authUser ? <DashboardOwner/> : <Navigate to="/login" />} />
-        <Route path='/manager/dashboard' element={authUser ? <DashboardManager/> : <Navigate to="/login" />} />
-        <Route path='/customer/dashboard' element={authUser ? <DashboardCustomer/> : <Navigate to="/login" />} />
+        <Route path='/owner/dashboard' element={authUser && authUser.role === "owner" ? <DashboardOwner/> : <Navigate to="/login" />} />
+        <Route path='/manager/dashboard' element={authUser && authUser.role === "manager" ? <DashboardManager/> : <Navigate to="/login" />} />
+        <Route path='/customer/dashboard' element={authUser && authUser.role === "customer" ? <DashboardCustomer/> : <Navigate to="/login" />} />
         
       </Routes>
       

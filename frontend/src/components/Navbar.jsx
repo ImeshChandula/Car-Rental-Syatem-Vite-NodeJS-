@@ -25,6 +25,11 @@ const NavBar = () => {
           navigate('/');
           break;
       }
+
+      setIsMenuOpen(false);
+    } else {
+      console.error("Cannot navigate to dashboard: User role not available");
+      navigate('/login');
     }
   };
 
