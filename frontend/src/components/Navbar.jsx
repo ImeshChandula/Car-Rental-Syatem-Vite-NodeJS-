@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Link, useNavigate } from 'react-router-dom';
 import { Car, CircleDashed, LogIn, LogOut, Menu, X } from 'lucide-react';
@@ -8,6 +8,11 @@ const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { logout, authUser } = useAuthStore();
   const navigate = useNavigate();
+
+  // Debug log to see authUser value
+  useEffect(() => {
+    console.log("NavBar authUser:", authUser);
+  }, [authUser]);
 
   const goToDashboard = () => {
     if (authUser && authUser.role) {

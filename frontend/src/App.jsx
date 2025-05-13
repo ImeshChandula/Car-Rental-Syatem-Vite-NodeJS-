@@ -40,6 +40,8 @@ function App() {
         <Route path='/manager/dashboard' element={authUser && authUser.role === "manager" ? <DashboardManager/> : <Navigate to="/login" />} />
         <Route path='/customer/dashboard' element={authUser && authUser.role === "customer" ? <DashboardCustomer/> : <Navigate to="/login" />} />
         
+        {/* Catch-all route */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       
     </div>
