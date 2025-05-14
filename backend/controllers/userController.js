@@ -78,6 +78,7 @@ const updateUserById = async (req, res) => {
     }
 };
 
+
 // Delete user - Admin only
 const deleteUserById = async (req, res) => {
     try {

@@ -12,6 +12,7 @@ class User {
         this.password = data.password;
         this.phone = data.phone;
         this.licenseNumber = data.licenseNumber;
+        this.profilePicture = data.profilePicture || 'default-profile.png';
         this.role = data.role || 'customer'; // 'manager', 'owner'
 
         this.createdAt = data.createdAt || new Date().toISOString();

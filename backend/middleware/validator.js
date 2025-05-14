@@ -8,6 +8,7 @@ const validateUser = (req, res, next) => {
     password: Joi.string().min(6).required(),
     phone: Joi.string().required(),
     licenseNumber: Joi.string().required(),
+    profilePicture: Joi.string().uri().optional(),
     role: Joi.string().valid('customer', 'manager', 'owner')
   });
 
