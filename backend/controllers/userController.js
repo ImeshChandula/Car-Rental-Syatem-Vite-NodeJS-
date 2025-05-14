@@ -23,7 +23,7 @@ const getAllUsers = async (req, res) => {
             }
         
             // If same priority, sort alphabetically by name (ascending)
-            return a.name.localeCompare(b.name);
+            return (a.name || '').localeCompare(b.name || '');
         });
 
         // Remove passwords from response
