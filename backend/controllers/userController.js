@@ -1,5 +1,21 @@
 const User = require('../models/User');
 
+// Get all users - Admin only
+const getLoggedUserProfile = async (req, res) => {
+    try {
+        const loggedUser = req.user.id;
+
+        const user = await User.findById(loggedUser);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // remove password
+        user.password = undefined;
+
+        res.status(200).json({msg: "User found:", user});
+    } catch (error) {}
+};
 
 // Get all users - Admin only
 const getAllUsers = async (req, res) => {
@@ -105,4 +121,4 @@ const deleteUserById = async (req, res) => {
 };
 
 
-module.exports = {getAllUsers, updateUserById, deleteUserById};
+module.exports = {getAllUsers, updateUserById, deleteUserById, getLoggedUserProfile};

@@ -6,6 +6,11 @@ const router = express.Router();
 
 //http://localhost:5000
 
+//@route   POST api/users/getLoggedUserProfile
+//@desc    Get Logged User Profile
+//@access  private 
+router.get("/getLoggedUserProfile", authenticateUser, userController.getLoggedUserProfile);
+
 //@route   POST api/users/getAllUsers
 //@desc    Get all users
 //@access  private - Admin only
