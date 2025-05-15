@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Link, useNavigate } from 'react-router-dom';
-import { Car, CircleDashed, LogIn, LogOut, Menu, X } from 'lucide-react';
+import { Car, CircleDashed, LogIn, LogOut, Menu, Settings, X } from 'lucide-react';
 import "../styles/NavBar.css";
 
 const NavBar = () => {
@@ -38,6 +38,11 @@ const NavBar = () => {
     }
   };
 
+  const handleSettings = () => {
+    navigate("/settings");
+    setIsMenuOpen(false);
+  };
+
   const handleLogout = () => {
     logout();
     setIsMenuOpen(false);
@@ -70,6 +75,11 @@ const NavBar = () => {
                   <button className="nav-button dashboard-button" onClick={goToDashboard}>
                     <CircleDashed size={20} />
                     <span>Dashboard</span>
+                  </button>
+
+                  <button className='nav-button settings-button' onClick={handleSettings}>
+                    <Settings size={20} />
+                    <span>Settings</span>
                   </button>
 
                   <button className="nav-button logout-button" onClick={handleLogout}>

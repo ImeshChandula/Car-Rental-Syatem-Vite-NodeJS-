@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Home from "./routes/Home";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
+import Settings from "./routes/Settings";
 import DashboardOwner from "./routes/DashboardOwner";
 import DashboardManager from "./routes/DashboardManager";
 import DashboardCustomer from "./routes/DashboardCustomer";
@@ -34,6 +35,7 @@ function App() {
         <Route path='/' element={<Home/>} />
         <Route path='/login' element={!authUser ? <Login/> : <Navigate to="/" />} />
         <Route path='/register' element={!authUser ? <Register/> : <Navigate to="/" />} />
+        <Route path='/settings' element={authUser ? <Settings/> : <Navigate to="/login" />} />
 
         {/* Protected routes*/}
         <Route path='/owner/dashboard' element={authUser && authUser.role === "owner" ? <DashboardOwner/> : <Navigate to="/login" />} />

@@ -89,6 +89,11 @@
   color: #2563eb;
 }
 
+.settings-button:hover {
+  background-color: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+}
+
 .dashboard-button:hover {
   background-color: rgba(37, 99, 235, 0.1);
   color: #2563eb;
