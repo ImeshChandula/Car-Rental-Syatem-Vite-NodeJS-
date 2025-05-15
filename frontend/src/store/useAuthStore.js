@@ -31,9 +31,11 @@ export const useAuthStore = create((set) => ({
             set({ authUser: res.data.user });
 
             toast.success("Account Created Successfully");
-            
+            return res.data;
         } catch (error) {
-            toast.error(error.response.data.message);
+            const errorMessage = error.response?.data?.message || "Failed to create account";
+            toast.error(errorMessage);
+            throw new Error(errorMessage);
         } finally {
             set({ isSigningUp: false })
         }
@@ -42,12 +44,25 @@ export const useAuthStore = create((set) => ({
     login: async (data) => {
         set({ isLoggingIn: true });
         try {
-            const res = await axiosInstance.post("/auth/login", data);
-            set({ authUser: res.data.user });
+            if (!data.email || !data.password) {
+                throw new Error("Email and password are required");
+            }
 
-            toast.success("Logged in successfully");
-            
+            const cleanedData = {
+                email: data.email.trim().toLowerCase(),
+                password: data.password
+            };
+
+            const res = await axiosInstance.post("/auth/login", cleanedData);
+            if (res.data && res.data.user) {
+                set({ authUser: res.data.user });
+                toast.success("Logged in successfully");
+                return res.data;
+            } else {
+                throw new Error("Invalid response from server");
+            }
         } catch (error) {
+            console.error("Login error:", error);
             toast.error(error.response.data.message);
         } finally {
             set({ isLoggingIn: false });

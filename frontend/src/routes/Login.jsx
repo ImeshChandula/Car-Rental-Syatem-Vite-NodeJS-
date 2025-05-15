@@ -7,6 +7,7 @@ import "../styles/Register.css";
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -16,12 +17,29 @@ const Login = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    if (errors[e.target.name]) {
+      setErrors({ ...errors, [e.target.name]: "" });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    login(formData);
-    setMessage("Login Successfully.");
+    setMessage("");
+
+    try {
+      // Clean up email before submission
+      const loginData = {
+        email: formData.email.trim().toLowerCase(),
+        password: formData.password
+      };
+      
+      await login(loginData);
+      // We'll let the toast in the auth store handle success messages
+    } catch (error) {
+      console.error("Login submission error:", error);
+      setMessage(error.message || "Login failed. Please check your credentials.");
+    }
   };
 
   return (
