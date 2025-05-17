@@ -25,7 +25,6 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage("");
 
     try {
       // Clean up email before submission
@@ -34,7 +33,10 @@ const Login = () => {
         password: formData.password
       };
       
-      await login(loginData);
+      const result = await login(loginData);
+      if (result && result.user){
+        setMessage("User logged successfully.");
+      }
       // We'll let the toast in the auth store handle success messages
     } catch (error) {
       console.error("Login submission error:", error);

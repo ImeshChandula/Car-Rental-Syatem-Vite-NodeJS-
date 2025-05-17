@@ -89,7 +89,7 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
     try {
         res.cookie("jwt", "", {maxAge: 0});
-        res.status(201).json({
+        res.status(200).json({
             message: 'Logout successful'
         });
     } catch (error) {
@@ -105,7 +105,7 @@ const checkCurrent = async (req, res) => {
     const user = req.user;
     user.password = undefined;
     
-    res.json(user);
+    res.status(200).json(user);
   } catch (error) {
     console.error('Get current user error:', error);
     res.status(500).json({ message: 'Server Error' });

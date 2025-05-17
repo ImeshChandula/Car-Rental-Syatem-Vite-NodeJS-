@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuthStore } from './store/useAuthStore';
 import { Loader } from "lucide-react";
+import { Toaster } from 'react-hot-toast';
 
 import Navbar from "./components/Navbar";
 import Home from "./routes/Home";
@@ -30,6 +31,37 @@ function App() {
 
   return (
     <div>
+      {/* Add Toast notification container */}
+      <Toaster 
+        position="top-center"
+        reverseOrder={false}
+        gutter={8}
+        toastOptions={{
+          // Default options for all toasts
+          duration: 5000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+          },
+          // Custom success toast styling
+          success: {
+            duration: 3000,
+            style: {
+              background: 'green',
+              color: 'white',
+            },
+          },
+          // Custom error toast styling
+          error: {
+            duration: 4000,
+            style: {
+              background: '#ff4b4b',
+              color: 'white',
+            },
+          },
+        }}
+      />
+
       <Navbar />
       <Routes>
         <Route path='/' element={<Home/>} />

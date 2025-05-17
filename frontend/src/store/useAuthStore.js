@@ -14,8 +14,12 @@ export const useAuthStore = create((set) => ({
         try {
             const res = await axiosInstance.get("/auth/checkCurrent");
 
-            set({ authUser: res.data });
-            console.log("Auth user set:", res.data);
+            if (res.data && res.status === 200) {
+                set({ authUser: res.data });
+                console.log("Auth user set:", res.data);
+            } else {
+                set({ authUser: null });
+            }
         } catch (error) {
             console.log("Error in checkAuth: ", error);
             set({ authUser: null });
@@ -28,14 +32,24 @@ export const useAuthStore = create((set) => ({
         set({ isSigningUp: true });
         try {
             const res = await axiosInstance.post("/auth/register", data);
-            set({ authUser: res.data.user });
-
-            toast.success("Account Created Successfully");
-            return res.data;
+            
+            // Check if the response contains user data and has a success status
+            if (res.data && res.data.user && res.status >= 200 && res.status < 300) {
+                set({ authUser: res.data.user });
+                toast.success("Account Created Successfully");
+                return res.data;
+            } else {
+                // If response doesn't contain expected data
+                const errorMessage = "Registration failed: Invalid server response";
+                toast.error(errorMessage);
+                throw new Error(errorMessage);
+            }
         } catch (error) {
-            const errorMessage = error.response?.data?.message || "Failed to create account";
+            // Handle API errors with proper error message
+            const errorMessage = error.response?.data?.message || 
+                               "Failed to create account. Please try again.";
             toast.error(errorMessage);
-            throw new Error(errorMessage);
+            throw error;
         } finally {
             set({ isSigningUp: false })
         }

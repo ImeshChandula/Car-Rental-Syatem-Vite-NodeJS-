@@ -19,29 +19,56 @@ const Register = () => {
   const { signup, isSigningUp } = useAuthStore();
 
   const validateForm = () => {
-    if (!formData.name) return toast.error("Full name is required");
-    if (!formData.email.trim()) return toast.error("Email is required");
-    if (!/\S+@\S+\.\S+/.test(formData.email)) return toast.error("Invalid email format");
-    if (!formData.password) return toast.error("Password is required");
-    if (formData.password.length < 6) return toast.error("Password must be at least 6 characters");
-    if (!formData.phone) return toast.error("Phone number is required");
-    if (!formData.licenseNumber) return toast.error("License number is required");
+    if (!formData.name) {
+      toast.error("Full name is required");
+      return false;
+    }
+    if (!formData.email.trim()) {
+      toast.error("Email is required");
+      return false;
+    }
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      toast.error("Invalid email format");
+      return false;
+    }
+    if (!formData.password) {
+      toast.error("Password is required");
+      return false;
+    }
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return false;
+    }
+    if (!formData.phone) {
+      toast.error("Phone number is required");
+      return false;
+    }
+    if (!formData.licenseNumber) {
+      toast.error("License number is required");
+      return false;
+    }
+    return true;
   };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const success = validateForm();
-
-    if (success === true) {
-      signup(formData);
+   const isValid = validateForm();
+    if (!isValid) return;
+    
+    try {
+      const result = await signup(formData);
+      if (result && result.user) {
+        setMessage("New account created successfully.");
+      }
+    } catch (error) {
+      console.error('Registration failed:', error);
+      // Error is already handled in the signup function with toast
     }
-
-    setMessage("New account Created Successfully.");
   };
 
   return (
