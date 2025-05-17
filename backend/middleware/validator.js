@@ -20,6 +20,26 @@ const validateUser = (req, res, next) => {
 };
 
 
+// Validate user registration
+const validateUserData = (req, res, next) => {
+  const schema = Joi.object({
+    name: Joi.string().optional(),
+    email: Joi.string().email().optional(),
+    password: Joi.string().min(6).optional(),
+    phone: Joi.string().optional(),
+    licenseNumber: Joi.string().optional(),
+    profilePicture: Joi.string().uri().optional(),
+    role: Joi.string().valid('customer', 'manager', 'owner')
+  });
+
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+  next();
+};
+
+
 // Validate car creation
 const validateCar = (req, res, next) => {
   const schema = Joi.object({
@@ -58,4 +78,4 @@ const validateRental = (req, res, next) => {
   next();
 };
 
-module.exports = { validateUser, validateCar, validateRental };
+module.exports = { validateUser, validateUserData, validateCar, validateRental };

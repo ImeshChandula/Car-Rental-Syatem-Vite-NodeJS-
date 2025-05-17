@@ -1,6 +1,6 @@
 const User = require('../models/User');
 
-// Get all users - Admin only
+//@desc     Get all users - Admin only
 const getLoggedUserProfile = async (req, res) => {
     try {
         const loggedUser = req.user.id;
@@ -20,7 +20,7 @@ const getLoggedUserProfile = async (req, res) => {
     }
 };
 
-// Get all users - Admin only
+//@desc     Get all users - Admin only
 const getAllUsers = async (req, res) => {
     try {
         const users = await User.findAll();
@@ -59,7 +59,7 @@ const getAllUsers = async (req, res) => {
 };
 
 
-// Update user
+//@desc     Update user by user id
 const updateUserById = async (req, res) => {
     try {
         const userIdToUpdate = req.params.id;
@@ -98,7 +98,69 @@ const updateUserById = async (req, res) => {
 };
 
 
-// Delete user - Admin only
+//@desc     Update user profile image by user id
+const updateUserProfileImage = async (req, res) => {
+    try {
+        const { profilePicture } = req.body;
+        const userIdToUpdate = req.params.id;
+        const currentUserId = req.user.id;
+
+        if (currentUserId !== userIdToUpdate) {
+            return res.status(403).json({ message: 'Not authorized to update this user' });
+        }
+
+        if (!profilePicture) {
+            return res.status(400).json({msg: "Profile picture is required"});
+        }
+
+        // data object
+        const updatedData = { };
+
+        if (profilePicture) {
+            try {
+                // Make sure cloudinary is properly initialized
+                if (!cloudinary || typeof cloudinary.uploader.upload !== 'function') {
+                    throw new Error('Cloudinary is not properly configured');
+                }
+                        
+                // Check the type of Pictures and handle appropriately
+                if (Array.isArray(profilePicture)) {
+                     // If it's an array of profile Picture files
+                    return res.status(400).json({msg: "Profile picture is should 1 image"});
+                } else if (typeof profilePicture === 'object' && profilePicture !== null && profilePicture.path) {
+                    // If it's a file object from multer
+                    const uploadResponse = await cloudinary.uploader.upload(profilePicture.path);
+                    updatedData.profilePicture = uploadResponse.secure_url;
+                } else if (typeof profilePicture === 'string') {
+                    // If it's a base64 string or a URL
+                    const uploadResponse = await cloudinary.uploader.upload(profilePicture);
+                    updatedData.profilePicture = uploadResponse.secure_url;
+                } else {
+                    throw new Error('Invalid profile picture format');
+                }
+            } catch (uploadError) {
+                console.error('Profile Picture upload error:', uploadError);
+                return res.status(400).json({ 
+                    error: "Failed to upload profile picture. Invalid format or Cloudinary configuration issue.",
+                    details: uploadError.message
+                });
+            }
+        };
+
+        const updatedUser = await User.updateById(userIdToUpdate, updatedData);
+
+        // remove password
+        updatedUser.password = undefined;
+
+        res.status(201).json({msg: "Profile picture updated successfully", updatedUser})
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Server error');
+    }
+};
+
+
+//@desc     Delete user by user id - Admin only
 const deleteUserById = async (req, res) => {
     try {
         const userIdToDelete = req.params.id;
@@ -124,4 +186,4 @@ const deleteUserById = async (req, res) => {
 };
 
 
-module.exports = {getAllUsers, updateUserById, deleteUserById, getLoggedUserProfile};
+module.exports = {getAllUsers, updateUserById, deleteUserById, getLoggedUserProfile, updateUserProfileImage};

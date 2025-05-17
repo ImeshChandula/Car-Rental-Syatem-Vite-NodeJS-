@@ -9,6 +9,9 @@ const createDefaultSuperAdmin = async () => {
         const existingSuperAdmin = await User.findByEmail(email);
 
         if (!existingSuperAdmin) {
+            const index = Math.floor(Math.random() * 100) + 1;
+            const randomAvatar = `https://avatar.iran.liara.run/public/${index}.png`;
+
             // create user data object
             const superAdminData  = {
                 name: process.env.SUPER_ADMIN_NAME ,
@@ -16,6 +19,7 @@ const createDefaultSuperAdmin = async () => {
                 password: process.env.SUPER_ADMIN_PASSWORD,
                 phone: process.env.SUPER_ADMIN_PHONE,
                 licenseNumber: process.env.SUPER_ADMIN_LICENSE_NUMBER,
+                profilePicture: randomAvatar,
                 role: 'owner',
             };
 

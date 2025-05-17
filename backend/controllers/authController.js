@@ -3,18 +3,32 @@ const { generateToken } = require("../utils/utils");
 require('dotenv').config();
 
 
-// Register a new user
+//@desc     Register a new user
 const register = async (req, res) => {
     try {
-        const { email } = req.body;
+        const { name, email, password, phone, licenseNumber } = req.body;
 
         const existingUser  = await User.findByEmail(email);
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
 
+        // generate a num between 1-100
+        const index = Math.floor(Math.random() * 100) + 1;
+        const randomAvatar = `https://avatar.iran.liara.run/public/${index}.png`;
+        
+        const userData = {
+            name, 
+            email, 
+            password, 
+            phone, 
+            licenseNumber, 
+            profilePicture: randomAvatar,
+            role: 'customer',
+        };
+
         // Create new user
-        const user = await User.create(req.body);
+        const user = await User.create(userData);
 
         // create JWT token
         const payload = {
@@ -36,7 +50,7 @@ const register = async (req, res) => {
 };
 
 
-// User login
+//@desc     User login
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -71,6 +85,7 @@ const login = async (req, res) => {
 };
 
 
+//@desc     User logout
 const logout = async (req, res) => {
     try {
         res.cookie("jwt", "", {maxAge: 0});
@@ -84,7 +99,7 @@ const logout = async (req, res) => {
 };
 
 
-// Get current user profile
+//@desc     Get current user profile
 const checkCurrent = async (req, res) => {
   try {
     const user = req.user;
