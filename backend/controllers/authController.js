@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const { generateToken } = require("../utils/utils");
+const transporter = require("../config/nodemailer");
 require('dotenv').config();
 
 
@@ -39,13 +40,26 @@ const register = async (req, res) => {
 
         generateToken(payload, res);
         
+        // sending welcome email
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: email,
+            subject: "Welcome to System...!",
+            text: `Your account has been created with email: ${email}`
+        };
+
+        const result = await transporter.sendMail(mailOptions);
+        if (!result) {
+            return res.status(400).json({ message: 'welcome email sending failed' });
+        }
+
         // block password displaying
         user.password = undefined;
 
         res.status(201).json({ message: 'User registered successfully',user });
     } catch (error) {
         console.error('Registration error:', error.message);
-        res.status(500).json({ message: 'Server Error' });
+        res.status(500).json({success: false, message: error.message });
     }
 };
 
