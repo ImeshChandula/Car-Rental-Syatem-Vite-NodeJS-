@@ -14,7 +14,10 @@ const getLoggedUserProfile = async (req, res) => {
         user.password = undefined;
 
         res.status(200).json({msg: "User found:", user});
-    } catch (error) {}
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
 };
 
 // Get all users - Admin only
