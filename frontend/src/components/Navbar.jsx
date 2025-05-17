@@ -57,41 +57,46 @@ const NavBar = () => {
       <header className="navbar">
         <div className="navbar-content">
           <div className="navbar-inner">
-            <div className="navbar-logo">
-              <Link to="/" className="logo-link">
-                <div className="logo-icon"><Car size={24} /></div>
-                <h1 className="logo-text">Car Rental System</h1>
-              </Link>
+
+            <div className="navbar-inner-left">
+              <div className="navbar-logo">
+                <Link to="/" className="logo-link">
+                  <div className="logo-icon"><Car size={24} /></div>
+                  <h1 className="logo-text">Car Rental System</h1>
+                </Link>
+              </div>
             </div>
 
-            <nav className={`navbar-nav ${isMenuOpen ? 'active' : ''}`}>
-              {!authUser ? (
-                <Link to="/login" className="nav-link login-link" onClick={() => setIsMenuOpen(false)}>
-                  <LogIn size={20} />
-                  <span>Log in</span>
-                </Link>
-              ) : (
-                <>
-                  <button className="nav-button dashboard-button" onClick={goToDashboard}>
-                    <CircleDashed size={20} />
-                    <span>Dashboard</span>
-                  </button>
+            <div className="navbar-inner-right">
+              <nav className={`navbar-nav ${isMenuOpen ? 'active' : ''}`}>
+                {!authUser ? (
+                  <Link to="/login" className="nav-link login-link" onClick={() => setIsMenuOpen(false)}>
+                    <LogIn size={20} />
+                    <span>Log in</span>
+                  </Link>
+                ) : (
+                  <>
+                    <button className="nav-button dashboard-button" onClick={goToDashboard}>
+                      <CircleDashed size={20} />
+                      <span>Dashboard</span>
+                    </button>
 
-                  <button className='nav-button settings-button' onClick={handleSettings}>
-                    <Settings size={20} />
-                    <span>Settings</span>
-                  </button>
+                    <button className='nav-button settings-button' onClick={handleSettings}>
+                      <Settings size={20} />
+                      <span>Settings</span>
+                    </button>
 
-                  <button className="nav-button logout-button" onClick={handleLogout}>
-                    <LogOut size={20} />
-                    <span>Logout</span>
-                  </button>
-                </>
-              )}
-            </nav>
-            
-            <div className="navbar-menu-toggle" onClick={toggleMenu}>
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    <button className="nav-button logout-button" onClick={handleLogout}>
+                      <LogOut size={20} />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                )}
+              </nav>
+              
+              <div className="navbar-menu-toggle" onClick={toggleMenu}>
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </div>
             </div>
           </div>
         </div>

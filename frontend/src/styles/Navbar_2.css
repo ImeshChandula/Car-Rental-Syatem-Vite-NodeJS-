@@ -1,6 +1,6 @@
 /* NavBar.css */
 :root {
-  --primary-color: #3c8cca;
+  --primary-color: #3a86ff;
   --primary-hover: #2563eb;
   --secondary-color: #f72585;
   --text-color: #333;
@@ -30,18 +30,27 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  width: 100%;
 }
 
 .navbar-inner {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Ensures maximum spacing between left and right */
   align-items: center;
   height: 70px;
+  width: 100%;
 }
 
 .navbar-inner-left {
   display: flex;
   align-items: center;
+  margin-right: auto; /* Pushes this div to the left edge */
+}
+
+.navbar-inner-right {
+  display: flex;
+  align-items: center;
+  margin-left: auto; /* Pushes this div to the right edge */
 }
 
 .navbar-logo {
@@ -71,11 +80,6 @@
 .logo-text {
   font-size: 1.25rem;
   font-weight: 700;
-}
-
-.navbar-inner-right {
-  display: flex;
-  align-items: center;
 }
 
 .navbar-nav {
@@ -161,6 +165,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  /* Make sure inner left and right stay aligned to edges */
+  .navbar-inner-left {
+    margin-right: 0;
+  }
+
+  .navbar-inner-right {
+    margin-left: 0;
   }
 
   .navbar-nav {
