@@ -100,10 +100,10 @@ const Login = () => {
               </button>
             </div>
             <p className='forgot-password'>
-              <Link to="/email/verify" className=''>Verify Email!</Link>
+              <Link to="/email/verify" className=''>Verify Email..!</Link>
             </p>
             <p className='forgot-password'>
-              <Link to="/reset/password" className=''>Forgot password?</Link>
+              <Link to="/reset/password" className=''>Forgot password ?</Link>
             </p>
           </div>
 

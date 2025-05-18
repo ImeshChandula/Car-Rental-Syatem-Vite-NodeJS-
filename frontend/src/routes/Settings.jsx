@@ -68,9 +68,6 @@ const Settings = () => {
 
   return (
     <div className="profile-container">
-      <div className="profile-header">
-        <h1>Account Settings</h1>
-      </div>
       <div className="profile-card">
         <div className="profile-image-container">
           <img
