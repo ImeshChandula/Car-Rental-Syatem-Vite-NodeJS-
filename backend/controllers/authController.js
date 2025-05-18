@@ -140,11 +140,11 @@ const sendVerifyOtp = async (req, res) => {
 
         const user = await User.findByEmail(email);
         if (!user) {
-            return res.status(400).json({success: false, msg: "User not found"});
+            return res.status(400).json({success: false, message: "User not found"});
         }
         
         if (user.isAccountVerified) {
-            return res.status(400).json({success: false, msg: "User already verified"});
+            return res.status(400).json({success: false, message: "User already verified"});
         }
 
         // create otp
@@ -157,7 +157,7 @@ const sendVerifyOtp = async (req, res) => {
 
         const updatedUser = await User.updateById(user.id, userData);
         if (!updatedUser) {
-            return res.status(400).json({success: false, msg: "OTP creation failed"});
+            return res.status(400).json({success: false, message: "OTP creation failed"});
         }
 
         const mailOptions = {
@@ -172,7 +172,7 @@ const sendVerifyOtp = async (req, res) => {
             return res.status(400).json({ message: 'Verification OTP sending failed' });
         }
 
-        res.status(200).json({success: true, msg: "Verification OTP sent to email"});
+        res.status(200).json({success: true, message: "Verification OTP sent to email"});
     } catch (error) {
         console.error('Send Verify OTP error:', error.message);
         res.status(500).json({success: false, message: error.message });
@@ -246,7 +246,7 @@ const forgotPassword = async (req, res) => {
 
         const updatedUser = await User.updateById(user.id, userData);
         if (!updatedUser) {
-            return res.status(400).json({success: false, msg: "OTP creation failed"});
+            return res.status(400).json({success: false, message: "OTP creation failed"});
         }
 
         const mailOptions = {
