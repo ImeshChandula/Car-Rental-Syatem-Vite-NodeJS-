@@ -15,8 +15,15 @@ export const useAuthStore = create((set) => ({
             const res = await axiosInstance.get("/auth/checkCurrent");
 
             if (res.data && res.status === 200) {
-                set({ authUser: res.data });
-                console.log("Auth user set:", res.data);
+                // Only set authUser if the account is verified
+                if (res.data.isAccountVerified) {
+                    set({ authUser: res.data });
+                    console.log("Auth user set:", res.data);
+                } else {
+                    set({ authUser: null });
+                    console.log("Gmail Account not verified, auth not set");
+                    toast.error("Please verify your gmail account to continue");
+                }
             } else {
                 set({ authUser: null });
             }

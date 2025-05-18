@@ -120,6 +120,26 @@
   align-items: center;
 }
 
+/*forgot-password*/
+.forgot-password {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.forgot-password a {
+  color: #6366f1;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.forgot-password a:hover {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+
+
+
 /* Button styles */
 .btn {
   width: 100%;

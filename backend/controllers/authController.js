@@ -27,18 +27,6 @@ const register = async (req, res) => {
             profilePicture: randomAvatar,
             role: 'customer',
         };
-
-        // Create new user
-        const user = await User.create(userData);
-
-        // create JWT token
-        const payload = {
-            id: user.id,
-            username: user.name,
-            role: user.role,
-        };
-
-        generateToken(payload, res);
         
         // sending welcome email
         const mailOptions = {
@@ -53,10 +41,23 @@ const register = async (req, res) => {
             return res.status(400).json({ message: 'welcome email sending failed' });
         }
 
+        // Create new user
+        const user = await User.create(userData);
+
+        // create JWT token
+        const payload = {
+            id: user.id,
+            username: user.name,
+            role: user.role,
+            isAccountVerified: user.isAccountVerified,
+        };
+
+        generateToken(payload, res);
+
         // block password displaying
         user.password = undefined;
 
-        res.status(201).json({ message: 'User registered successfully',user });
+        res.status(201).json({ message: 'User registered successfully', user });
     } catch (error) {
         console.error('Registration error:', error.message);
         res.status(500).json({success: false, message: error.message });
@@ -79,11 +80,16 @@ const login = async (req, res) => {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
+        if (!user.isAccountVerified) {
+            return res.status(400).json({ message: 'Your gmail is not verified' });
+        }
+
         // create JWT token
         const payload = {
             id: user.id,
             username: user.name,
             role: user.role,
+            isAccountVerified: user.isAccountVerified,
         };
 
         generateToken(payload, res); 
@@ -130,12 +136,15 @@ const checkCurrent = async (req, res) => {
 //@desc     Send verification OTP to the user email
 const sendVerifyOtp = async (req, res) => {
     try {
-        const userId = req.user.id;
-        const user = await User.findById(userId);
+        const {email} = req.body;
+
+        const user = await User.findByEmail(email);
         if (!user) {
-            return res.status(400).json({success: false, msg: "user not found"});
-        } else if (user.isAccountVerified) {
-            return res.status(400).json({success: false, msg: "user already verified"});
+            return res.status(400).json({success: false, msg: "User not found"});
+        }
+        
+        if (user.isAccountVerified) {
+            return res.status(400).json({success: false, msg: "User already verified"});
         }
 
         // create otp
@@ -146,7 +155,7 @@ const sendVerifyOtp = async (req, res) => {
         userData.verifyOtp = otp;
         userData.verifyOtpExpiredAt = new Date(Date.now() + 2.5 * 60 * 1000).toISOString(); // expires at 2 minutes 30 seconds from now
 
-        const updatedUser = await User.updateById(userId, userData);
+        const updatedUser = await User.updateById(user.id, userData);
         if (!updatedUser) {
             return res.status(400).json({success: false, msg: "OTP creation failed"});
         }
@@ -174,16 +183,20 @@ const sendVerifyOtp = async (req, res) => {
 //@desc     Verify email by otp
 const verifyEmail = async (req, res) => {
     try {
-        const userId = req.user.id;
-        const { otp } = req.body;
+        const { email, otp } = req.body;
 
-        if (!userId || !otp) {
-            return res.status(400).json({success: false, message: "Missing UserID or OTP"});
+        const user = await User.findByEmail(email);
+        if (!user) {
+            return res.status(400).json({success: false, message: "User not found"});
         }
 
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(400).json({success: false, message: "user not found"});
+        const userId = user.id;
+        if (!userId || !otp) {
+            return res.status(400).json({success: false, message: "Missing email or OTP"});
+        }
+
+        if (user.isAccountVerified) {
+            return res.status(400).json({success: false, message: "Your gmail has been already verified"});
         }
 
         if (user.verifyOtp === '' || user.verifyOtp !== otp){

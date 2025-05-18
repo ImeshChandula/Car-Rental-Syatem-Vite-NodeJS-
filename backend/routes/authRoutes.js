@@ -31,12 +31,12 @@ router.get("/checkCurrent", authenticateUser,  authController.checkCurrent);
 //@route   POST api/auth/sendVerifyOtp
 //@desc    Send verification OTP to the user email
 //@access  Private
-router.post("/sendVerifyOtp", authenticateUser, authController.sendVerifyOtp);
+router.post("/sendVerifyOtp", authController.sendVerifyOtp);
 
 //@route   POST api/auth/verifyEmail
 //@desc    Verify email by otp
 //@access  Private
-router.post("/verifyEmail", authenticateUser, authController.verifyEmail);
+router.post("/verifyEmail", authController.verifyEmail);
 
 //@route   POST api/auth/sendResetOtp
 //@desc    Get otp to reset password
