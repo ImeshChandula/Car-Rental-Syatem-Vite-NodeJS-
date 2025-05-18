@@ -20,6 +20,7 @@ const createDefaultSuperAdmin = async () => {
                 phone: process.env.SUPER_ADMIN_PHONE,
                 licenseNumber: process.env.SUPER_ADMIN_LICENSE_NUMBER,
                 profilePicture: randomAvatar,
+                isAccountVerified: true,
                 role: 'owner',
             };
 
