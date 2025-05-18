@@ -66,7 +66,7 @@ const updateUserById = async (req, res) => {
         const currentUserId = req.user.id;
 
         // Only allow users to update their own profile unless admin
-        if (currentUserId !== 'owner' && currentUserId !== userIdToUpdate) {
+        if (req.user.role !== 'owner' && currentUserId !== userIdToUpdate) {
             return res.status(403).json({ message: 'Not authorized to update this user' });
         }
         
@@ -160,9 +160,9 @@ const deleteUserById = async (req, res) => {
         const userIdToDelete = req.params.id;
         const currentUserId = req.user.id; // From auth middleware
         
-        // Prevent users from deleting their own account
-        if (userIdToDelete === currentUserId) {
-            return res.status(403).json({success: false, message: 'You cannot delete your own account'});
+        // Only allow users to update their own profile unless admin
+        if (req.user.role !== 'owner' && currentUserId !== userIdToDelete) {
+            return res.status(403).json({ message: 'Not authorized to delete this user' });
         }
         
         // Check if user exists before attempting deletion

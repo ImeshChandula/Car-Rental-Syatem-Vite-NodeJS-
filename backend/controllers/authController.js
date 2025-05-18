@@ -44,7 +44,7 @@ const register = async (req, res) => {
         // Create new user
         const user = await User.create(userData);
 
-        // create JWT token
+        /*// create JWT token
         const payload = {
             id: user.id,
             username: user.name,
@@ -52,7 +52,7 @@ const register = async (req, res) => {
             isAccountVerified: user.isAccountVerified,
         };
 
-        generateToken(payload, res);
+        generateToken(payload, res);*/
 
         // block password displaying
         user.password = undefined;

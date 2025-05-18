@@ -30,7 +30,7 @@ router.patch("/updateUserProfileImage/:id", validateUserData, authenticateUser, 
 //@route   DELETE api/users/deleteUserById/:id
 //@desc    Update user
 //@access  private 
-router.delete("/deleteUserById/:id", authenticateUser, authorizeRoles("owner"), userController.deleteUserById);
+router.delete("/deleteUserById/:id", authenticateUser, userController.deleteUserById);
 
 
 

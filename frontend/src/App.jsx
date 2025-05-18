@@ -68,7 +68,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home/>} />
         <Route path='/login' element={!authUser ? <Login/> : <Navigate to="/" />} />
-        <Route path='/register' element={!authUser ? <Register/> : <Navigate to="/" />} />
+        <Route path='/register' element={!authUser ? <Register/> : <Navigate to="/email/verify" />} />
         <Route path='/settings' element={authUser ? <Settings/> : <Navigate to="/login" />} />
 
         <Route path='/email/verify' element={<EmailVerify/>} />
