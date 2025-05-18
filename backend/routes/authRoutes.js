@@ -38,5 +38,15 @@ router.post("/sendVerifyOtp", authenticateUser, authController.sendVerifyOtp);
 //@access  Private
 router.post("/verifyEmail", authenticateUser, authController.verifyEmail);
 
+//@route   POST api/auth/sendResetOtp
+//@desc    Get otp to reset password
+//@access  Public
+router.post("/sendResetOtp", authController.forgotPassword);
+
+//@route   POST api/auth/resetPassword
+//@desc    Reset password
+//@access  Public
+router.post("/resetPassword", authController.resetPassword);
+
 
 module.exports = router;

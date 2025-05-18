@@ -110,6 +110,12 @@ class User {
             if (!userDoc.exists) {
                 return false;
             }
+
+            // Hash password if it's being updated
+            if (updateData.password) {
+                const salt = await bcrypt.genSalt(10);
+                updateData.password = await bcrypt.hash(updateData.password, salt);
+            }
             
             updateData.updatedAt = new Date().toISOString();
         
