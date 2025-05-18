@@ -9,7 +9,13 @@ const validateUser = (req, res, next) => {
     phone: Joi.string().required(),
     licenseNumber: Joi.string().required(),
     profilePicture: Joi.string().uri().optional(),
-    role: Joi.string().valid('customer', 'manager', 'owner')
+    role: Joi.string().valid('customer', 'manager', 'owner'),
+  
+    verifyOtp: Joi.string().allow('').optional(),
+    verifyOtpExpiredAt: Joi.string().isoDate().optional(),
+    isAccountVerified: Joi.boolean().optional(),
+    resetOtp: Joi.string().allow('').optional(),
+    resetOtpExpiredAt: Joi.string().isoDate().optional(),
   });
 
   const { error } = schema.validate(req.body);
@@ -29,7 +35,13 @@ const validateUserData = (req, res, next) => {
     phone: Joi.string().optional(),
     licenseNumber: Joi.string().optional(),
     profilePicture: Joi.string().uri().optional(),
-    role: Joi.string().valid('customer', 'manager', 'owner')
+    role: Joi.string().valid('customer', 'manager', 'owner'),
+
+    verifyOtp: Joi.string().allow('').optional(),
+    verifyOtpExpiredAt: Joi.string().isoDate().optional(),
+    isAccountVerified: Joi.boolean().optional(),
+    resetOtp: Joi.string().allow('').optional(),
+    resetOtpExpiredAt: Joi.string().isoDate().optional(),
   });
 
   const { error } = schema.validate(req.body);

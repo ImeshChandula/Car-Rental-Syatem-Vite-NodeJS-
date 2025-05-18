@@ -23,12 +23,20 @@ router.post("/login", authController.login);
 //@access  Private
 router.post("/logout", authenticateUser, authController.logout);
 
-//@route   POST api/auth/checkCurrent
+//@route   GET api/auth/checkCurrent
 //@desc    Get current user profile(by token)
 //@access  Private
 router.get("/checkCurrent", authenticateUser,  authController.checkCurrent);
 
+//@route   POST api/auth/sendVerifyOtp
+//@desc    Send verification OTP to the user email
+//@access  Private
+router.post("/sendVerifyOtp", authenticateUser, authController.sendVerifyOtp);
 
+//@route   POST api/auth/verifyEmail
+//@desc    Verify email by otp
+//@access  Private
+router.post("/verifyEmail", authenticateUser, authController.verifyEmail);
 
 
 module.exports = router;
