@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from '../store/useAuthStore';
+import { useNavigate } from 'react-router-dom';
 import avatar from "../assets/avatar.jpg";
 import toast from 'react-hot-toast';
 import '../styles/Settings.css';
 
 const Settings = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const { logout } = useAuthStore();
@@ -117,7 +119,7 @@ const Settings = () => {
         </div>
       </div>
       <div className="profile-actions">
-        <button className="edit-button">Edit Profile</button>
+        <button className="edit-button" onClick={() => navigate('/reset/password')}>Reset My Password</button>
         <button className="delete-button" onClick={handleDelete}>Delete My Account</button>
       </div>
     </div>

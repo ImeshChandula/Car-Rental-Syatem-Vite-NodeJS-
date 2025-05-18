@@ -72,7 +72,7 @@ function App() {
         <Route path='/settings' element={authUser ? <Settings/> : <Navigate to="/login" />} />
 
         <Route path='/email/verify' element={!authUser ? <EmailVerify/> : <Navigate to="/" />} />
-        <Route path='/reset/password' element={!authUser ? <ResetPassword /> : <Navigate to="/" />} />
+        <Route path='/reset/password' element={!authUser ? <ResetPassword /> : <ResetPassword />} />
 
         {/* Protected routes*/}
         <Route path='/owner/dashboard' element={authUser && authUser.role === "owner" ? <DashboardOwner/> : <Navigate to="/login" />} />
