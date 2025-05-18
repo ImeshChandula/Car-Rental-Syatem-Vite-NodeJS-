@@ -51,7 +51,7 @@ const getAllUsers = async (req, res) => {
             return user;
         });
         
-        res.json({count: sanitizedUsers.length, data: sanitizedUsers});
+        res.status(200).json({count: sanitizedUsers.length, data: sanitizedUsers});
     } catch (error) {
         console.error('Get all users error:', error);
         res.status(500).json({ message: 'Server Error' });
@@ -75,12 +75,6 @@ const updateUserById = async (req, res) => {
             delete req.body.role;
         }
         
-        // Hash password if it's being updated
-        if (req.body.password) {
-            const salt = await bcrypt.genSalt(10);
-            req.body.password = await bcrypt.hash(req.body.password, salt);
-        }
-        
         const updatedUser = await User.updateById(req.params.id, req.body);
         
         if (!updatedUser) {
@@ -90,7 +84,7 @@ const updateUserById = async (req, res) => {
         // Remove password from response
         updatedUser.password = undefined;
         
-        res.json({ message: 'User updated successfully', user: updatedUser });
+        res.status(201).json({ message: 'User updated successfully', user: updatedUser });
     } catch (error) {
         console.error('Update user error:', error);
         res.status(500).json({ message: 'Server Error' });
@@ -178,7 +172,7 @@ const deleteUserById = async (req, res) => {
         }
         
         await User.deleteById(req.params.id);   
-        res.json({ message: 'User deleted successfully' });
+        res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
         console.error('Delete user error:', error);
         res.status(500).json({ message: 'Server Error', error: error.message });
