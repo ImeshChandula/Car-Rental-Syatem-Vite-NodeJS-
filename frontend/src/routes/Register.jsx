@@ -2,10 +2,12 @@ import { useState} from 'react';
 import { Link } from 'react-router-dom';
 import toast from "react-hot-toast";
 import { useAuthStore } from '../store/useAuthStore';
+import { useNavigate } from 'react-router-dom';
 import { Car, Eye, EyeOff, IdCard, Loader2, Lock, Mail, Phone, User } from 'lucide-react';
 import "../styles/Register.css";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
   const [formData, setFormData] = useState({
@@ -64,6 +66,7 @@ const Register = () => {
       const result = await signup(formData);
       if (result && result.user) {
         setMessage("New account created successfully.");
+        navigate('/email/verify');
       }
     } catch (error) {
       console.error('Registration failed:', error);

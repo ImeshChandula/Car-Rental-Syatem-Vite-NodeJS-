@@ -42,9 +42,17 @@ export const useAuthStore = create((set) => ({
             
             // Check if the response contains user data and has a success status
             if (res.data && res.data.user && res.status >= 200 && res.status < 300) {
-                set({ authUser: res.data.user });
-                toast.success("Account Created Successfully");
-                return res.data;
+                // Only set authUser if the account is verified
+                if (res.data.isAccountVerified) {
+                    set({ authUser: res.data });
+                    console.log("Auth user set:", res.data);
+                    return {user: res.data, isVerified: true };
+                } else {
+                    set({ authUser: null });
+                    console.log("Gmail Account not verified, auth not set");
+                    toast.error("Please verify your gmail account to continue");
+                    return { user: res.data, isVerified: false };
+                }
             } else {
                 // If response doesn't contain expected data
                 const errorMessage = "Registration failed: Invalid server response";

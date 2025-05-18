@@ -68,10 +68,10 @@ function App() {
       <Routes>
         <Route path='/' element={<Home/>} />
         <Route path='/login' element={!authUser ? <Login/> : <Navigate to="/" />} />
-        <Route path='/register' element={!authUser ? <Register/> : <Navigate to="/email/verify" />} />
+        <Route path='/register' element={!authUser ? <Register/> : <Navigate to="/" />} />
         <Route path='/settings' element={authUser ? <Settings/> : <Navigate to="/login" />} />
 
-        <Route path='/email/verify' element={<EmailVerify/>} />
+        <Route path='/email/verify' element={!authUser ? <EmailVerify/> : <Navigate to="/" />} />
         <Route path='/reset/password' element={!authUser ? <ResetPassword /> : <Navigate to="/" />} />
 
         {/* Protected routes*/}
