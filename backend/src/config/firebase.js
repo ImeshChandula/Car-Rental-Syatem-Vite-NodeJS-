@@ -24,6 +24,7 @@ const initializeFirebase = () => {
       db: admin.firestore(),
       auth: admin.auth(),
       storage: admin.storage(),
+      messaging: admin.messaging(),
       admin // Export admin for additional functionality
     };
   } catch (error) {
