@@ -1,11 +1,11 @@
-const User = require('../models/User');
+const UserService = require('../services/userService');
 
 //@desc     Get all users - Admin only
 const getLoggedUserProfile = async (req, res) => {
     try {
         const loggedUser = req.user.id;
 
-        const user = await User.findById(loggedUser);
+        const user = await UserService.findById(loggedUser);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -23,7 +23,7 @@ const getLoggedUserProfile = async (req, res) => {
 //@desc     Get all users - Admin only
 const getAllUsers = async (req, res) => {
     try {
-        const users = await User.findAll();
+        const users = await UserService.findAll();
     
         const rolePriority = {
             'owner': 3,
@@ -75,7 +75,7 @@ const updateUserById = async (req, res) => {
             delete req.body.role;
         }
         
-        const updatedUser = await User.updateById(req.params.id, req.body);
+        const updatedUser = await UserService.updateById(req.params.id, req.body);
         
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' });
@@ -141,7 +141,7 @@ const updateUserProfileImage = async (req, res) => {
             }
         };
 
-        const updatedUser = await User.updateById(userIdToUpdate, updatedData);
+        const updatedUser = await UserService.updateById(userIdToUpdate, updatedData);
 
         // remove password
         updatedUser.password = undefined;
@@ -166,12 +166,12 @@ const deleteUserById = async (req, res) => {
         }
         
         // Check if user exists before attempting deletion
-        const userToDelete = await User.findById(userIdToDelete);
+        const userToDelete = await UserService.findById(userIdToDelete);
         if (!userToDelete) {
             return res.status(404).json({success: false, message: 'User not found'});
         }
         
-        await User.deleteById(req.params.id);   
+        await UserService.deleteById(req.params.id);   
         res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
         console.error('Delete user error:', error);
