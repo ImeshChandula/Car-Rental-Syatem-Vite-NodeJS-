@@ -1,7 +1,7 @@
-const express = require('express');
-const { authenticateUser, authorizeRoles } = require("../middleware/authMiddleware");
-const { validateUserData } = require("../middleware/validator");
-const userController  = require("../controllers/userController");
+import express from 'express';
+import { authenticateUser, authorizeRoles } from "../middleware/authMiddleware.js";
+import { validateUserData } from "../middleware/validator.js";
+import { deleteUserById, getAllUsers, getLoggedUserProfile, updateUserById, updateUserProfileImage }  from "../controllers/userController.js";
 
 const router = express.Router();
 
@@ -10,28 +10,28 @@ const router = express.Router();
 //@route   POST api/users/getLoggedUserProfile
 //@desc    Get Logged User Profile
 //@access  private 
-router.get("/getLoggedUserProfile", authenticateUser, userController.getLoggedUserProfile);
+router.get("/getLoggedUserProfile", authenticateUser, getLoggedUserProfile);
 
 //@route   POST api/users/getAllUsers
 //@desc    Get all users
 //@access  private - Admin only
-router.get("/getAllUsers", authenticateUser, authorizeRoles("owner"), userController.getAllUsers);
+router.get("/getAllUsers", authenticateUser, authorizeRoles("owner"), getAllUsers);
 
 //@route   PATCH api/users/updateUserById/:id
 //@desc    Update user
 //@access  private 
-router.patch("/updateUserById/:id", validateUserData, authenticateUser, userController.updateUserById);
+router.patch("/updateUserById/:id", validateUserData, authenticateUser, updateUserById);
 
 //@route   PATCH api/users/updateUserProfileImage/:id
 //@desc    Update User Profile Image
 //@access  private 
-router.patch("/updateUserProfileImage/:id", validateUserData, authenticateUser, userController.updateUserProfileImage);
+router.patch("/updateUserProfileImage/:id", validateUserData, authenticateUser, updateUserProfileImage);
 
 //@route   DELETE api/users/deleteUserById/:id
 //@desc    Update user
 //@access  private 
-router.delete("/deleteUserById/:id", authenticateUser, userController.deleteUserById);
+router.delete("/deleteUserById/:id", authenticateUser, deleteUserById);
 
 
 
-module.exports = router;
+export default router;

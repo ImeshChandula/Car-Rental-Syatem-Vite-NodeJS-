@@ -1,18 +1,12 @@
-const jwt = require("jsonwebtoken");
-require('dotenv').config();
+import jwt from "jsonwebtoken";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const authenticateUser = (req, res, next) => {
     try {
       const token = req.cookies.jwt;    // take token from cookies
       
-      /*const authHeader = req.header("Authorization");
-
-      if (!authHeader || !authHeader.startsWith("Bearer ")){
-        return res.status(401).json({ message: "No token, Authorization Access Denied" });
-      } 
-
-      const token = authHeader.split(" ")[1]; // Extract token after "Bearer"
-      */
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = decoded;
 
@@ -36,4 +30,4 @@ const authorizeRoles = (...allowedRoles) => {
   };
 };
 
-module.exports = { authenticateUser, authorizeRoles };
+export { authenticateUser, authorizeRoles };

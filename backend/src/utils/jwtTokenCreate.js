@@ -1,5 +1,7 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const generateToken = (payload, res) => {
     const token = jwt.sign(
@@ -18,4 +20,4 @@ const generateToken = (payload, res) => {
     return token;
 };
 
-module.exports = {generateToken};
+export default generateToken;

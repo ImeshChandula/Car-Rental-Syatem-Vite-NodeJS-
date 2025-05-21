@@ -1,7 +1,7 @@
-const express = require('express');
-const { authenticateUser, authorizeRoles } = require("../middleware/authMiddleware");
-const { validateUser } = require("../middleware/validator");
-const authController  = require("../controllers/authController");
+import express from 'express';
+import { authenticateUser } from '../middleware/authMiddleware.js';
+import { validateUser } from '../middleware/validator.js';
+import { checkCurrent, forgotPassword, login, logout, register, resetPassword, sendVerifyOtp, verifyEmail} from '../controllers/authController.js';
 
 const router = express.Router();
 
@@ -11,42 +11,42 @@ const router = express.Router();
 //@route   POST api/auth/register
 //@desc    Register user
 //@access  Public
-router.post("/register", validateUser, authController.register);
+router.post("/register", validateUser, register);
 
 //@route   POST api/auth/login
 //@desc    Register user
 //@access  Public
-router.post("/login", authController.login);
+router.post("/login", login);
 
 //@route   POST api/auth/logout
 //@desc    Logout user
 //@access  Private
-router.post("/logout", authenticateUser, authController.logout);
+router.post("/logout", authenticateUser, logout);
 
 //@route   GET api/auth/checkCurrent
 //@desc    Get current user profile(by token)
 //@access  Private
-router.get("/checkCurrent", authenticateUser,  authController.checkCurrent);
+router.get("/checkCurrent", authenticateUser, checkCurrent);
 
 //@route   POST api/auth/sendVerifyOtp
 //@desc    Send verification OTP to the user email
 //@access  Private
-router.post("/sendVerifyOtp", authController.sendVerifyOtp);
+router.post("/sendVerifyOtp", sendVerifyOtp);
 
 //@route   POST api/auth/verifyEmail
 //@desc    Verify email by otp
 //@access  Private
-router.post("/verifyEmail", authController.verifyEmail);
+router.post("/verifyEmail", verifyEmail);
 
 //@route   POST api/auth/sendResetOtp
 //@desc    Get otp to reset password
 //@access  Public
-router.post("/sendResetOtp", authController.forgotPassword);
+router.post("/sendResetOtp", forgotPassword);
 
 //@route   POST api/auth/resetPassword
 //@desc    Reset password
 //@access  Public
-router.post("/resetPassword", authController.resetPassword);
+router.post("/resetPassword", resetPassword);
 
 
-module.exports = router;
+export default router;

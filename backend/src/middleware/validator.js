@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 // Validate user registration
 const validateUser = (req, res, next) => {
@@ -90,4 +90,4 @@ const validateRental = (req, res, next) => {
   next();
 };
 
-module.exports = { validateUser, validateUserData, validateCar, validateRental };
+export { validateUser, validateUserData, validateCar, validateRental };

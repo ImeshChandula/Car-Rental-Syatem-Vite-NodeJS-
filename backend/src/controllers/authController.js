@@ -1,8 +1,10 @@
-const UserService = require('../services/userService');
-const transporter = require('../config/nodemailer');
-const { generateToken } = require("../utils/jwtTokenCreate");
-const {sendWelcomeEmail}  = require("../utils/sendWelcomeEmail");
-require('dotenv').config();
+import dotenv from 'dotenv';
+import UserService from '../services/userService.js';
+import transporter from '../config/nodemailer.js';
+import generateToken from '../utils/jwtTokenCreate.js';
+import sendWelcomeEmail from '../utils/sendWelcomeEmail.js';
+
+dotenv.config();
 
 
 //@desc     Register a new user
@@ -287,7 +289,7 @@ const resetPassword = async (req, res) => {
 };
 
 
-module.exports = { 
+export { 
     register, 
     login, 
     logout, 

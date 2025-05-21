@@ -1,6 +1,6 @@
-const initializeFirebase = require("../config/firebase");
-const User = require('../models/User');
-const bcrypt = require('bcryptjs');
+import initializeFirebase from "../config/firebase.js";
+import User from '../models/User.js';
+import bcrypt from 'bcryptjs';
 
 const { db } = initializeFirebase();
 const userCollection = db.collection('users');
@@ -127,4 +127,4 @@ const UserService = {
     }
 };
 
-module.exports = UserService;
+export default UserService;

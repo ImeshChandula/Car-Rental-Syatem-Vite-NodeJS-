@@ -1,5 +1,7 @@
-const transporter = require('../config/nodemailer');
-require('dotenv').config();
+import transporter from '../config/nodemailer.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const sendWelcomeEmail = async (email) => {
     const mailOptions = {
@@ -18,4 +20,4 @@ const sendWelcomeEmail = async (email) => {
     }
 };
 
-module.exports = {sendWelcomeEmail};
+export default sendWelcomeEmail;

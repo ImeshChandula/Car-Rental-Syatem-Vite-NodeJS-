@@ -1,7 +1,9 @@
-const UserService = require('../services/userService');
-require('dotenv').config();
+import dotenv from 'dotenv';
+import UserService from '../services/userService.js';
 
-// Create a default Super Admin
+dotenv.config();
+
+
 const createDefaultSuperAdmin = async () => {
     try {
         const email = process.env.SUPER_ADMIN_EMAIL;
@@ -33,7 +35,7 @@ const createDefaultSuperAdmin = async () => {
     }
 };
 
-// If you want to call this function directly during server startup
+
 const initializeDefaultSuperAdmin = async () => {
     try {
         await createDefaultSuperAdmin();
@@ -43,4 +45,4 @@ const initializeDefaultSuperAdmin = async () => {
     }
 };
 
-module.exports = {createDefaultSuperAdmin, initializeDefaultSuperAdmin};
+export {createDefaultSuperAdmin, initializeDefaultSuperAdmin};

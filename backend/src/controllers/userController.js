@@ -1,5 +1,5 @@
-const UserService = require('../services/userService');
-const {uploadImage} = require('../utils/uploadMedia');
+import UserService from '../services/userService.js';
+import uploadImage from '../utils/uploadMedia.js';
 
 //@desc     Get all users - Admin only
 const getLoggedUserProfile = async (req, res) => {
@@ -157,4 +157,4 @@ const deleteUserById = async (req, res) => {
 };
 
 
-module.exports = {getAllUsers, updateUserById, deleteUserById, getLoggedUserProfile, updateUserProfileImage};
+export {getAllUsers, updateUserById, deleteUserById, getLoggedUserProfile, updateUserProfileImage};

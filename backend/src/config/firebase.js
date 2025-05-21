@@ -1,7 +1,9 @@
-const admin = require('firebase-admin');
-require('dotenv').config();
+import admin from 'firebase-admin';
+import dotenv from 'dotenv';
 
-// Initialize Firebase Admin SDK
+dotenv.config();
+
+
 const initializeFirebase = () => {
   try {
     if (admin.apps.length === 0) {
@@ -9,9 +11,10 @@ const initializeFirebase = () => {
         credential: admin.credential.cert({
           projectId: process.env.FIREBASE_PROJECT_ID,
           clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-          // Handle newline characters in private key
           privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
         }),
+        // Add database URL for full Realtime Database access (optional)
+        databaseURL: process.env.FIREBASE_DATABASE_URL,
         storageBucket: process.env.FIREBASE_STORAGE_BUCKET
       });
       
@@ -30,4 +33,4 @@ const initializeFirebase = () => {
   }
 };
 
-module.exports = initializeFirebase;
+export default initializeFirebase;
