@@ -1,6 +1,7 @@
 const UserService = require('../services/userService');
-const { generateToken } = require("../utils/jwtTokenUtils");
-const transporter = require("../config/nodemailer");
+const transporter = require('../config/nodemailer');
+const { generateToken } = require("../utils/jwtTokenCreate");
+const {sendWelcomeEmail}  = require("../utils/sendWelcomeEmail");
 require('dotenv').config();
 
 
@@ -27,16 +28,9 @@ const register = async (req, res) => {
             profilePicture: randomAvatar,
             role: 'customer',
         };
-        
-        // sending welcome email
-        const mailOptions = {
-            from: process.env.SENDER_EMAIL,
-            to: email,
-            subject: "Welcome to System...!",
-            text: `Your account has been created with email: ${email}`
-        };
 
-        const result = await transporter.sendMail(mailOptions);
+        // send welcome email
+        const result = await sendWelcomeEmail(email);
         if (!result) {
             return res.status(400).json({ message: 'welcome email sending failed' });
         }

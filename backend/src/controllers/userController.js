@@ -1,4 +1,5 @@
 const UserService = require('../services/userService');
+const {uploadImage} = require('../utils/uploadMedia');
 
 //@desc     Get all users - Admin only
 const getLoggedUserProfile = async (req, res) => {
@@ -110,36 +111,12 @@ const updateUserProfileImage = async (req, res) => {
         // data object
         const updatedData = { };
 
-        if (profilePicture) {
-            try {
-                // Make sure cloudinary is properly initialized
-                if (!cloudinary || typeof cloudinary.uploader.upload !== 'function') {
-                    throw new Error('Cloudinary is not properly configured');
-                }
-                        
-                // Check the type of Pictures and handle appropriately
-                if (Array.isArray(profilePicture)) {
-                     // If it's an array of profile Picture files
-                    return res.status(400).json({msg: "Profile picture is should 1 image"});
-                } else if (typeof profilePicture === 'object' && profilePicture !== null && profilePicture.path) {
-                    // If it's a file object from multer
-                    const uploadResponse = await cloudinary.uploader.upload(profilePicture.path);
-                    updatedData.profilePicture = uploadResponse.secure_url;
-                } else if (typeof profilePicture === 'string') {
-                    // If it's a base64 string or a URL
-                    const uploadResponse = await cloudinary.uploader.upload(profilePicture);
-                    updatedData.profilePicture = uploadResponse.secure_url;
-                } else {
-                    throw new Error('Invalid profile picture format');
-                }
-            } catch (uploadError) {
-                console.error('Profile Picture upload error:', uploadError);
-                return res.status(400).json({ 
-                    error: "Failed to upload profile picture. Invalid format or Cloudinary configuration issue.",
-                    details: uploadError.message
-                });
-            }
-        };
+        try {
+            const imageUrl = await uploadImage(profilePicture);
+            updatedData.profilePicture = imageUrl;
+        } catch (error) {
+            return res.status(400).json({error: "Failed to upload profile picture", message: error.message});
+        }
 
         const updatedUser = await UserService.updateById(userIdToUpdate, updatedData);
 
