@@ -1,5 +1,4 @@
 const User = require("../models/User");
-const bcrypt = require("bcryptjs");
 require('dotenv').config();
 
 // Create a default Super Admin

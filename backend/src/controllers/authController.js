@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const { generateToken } = require("../utils/utils");
+const { generateToken } = require("../utils/jwtTokenUtils");
 const transporter = require("../config/nodemailer");
 require('dotenv').config();
 

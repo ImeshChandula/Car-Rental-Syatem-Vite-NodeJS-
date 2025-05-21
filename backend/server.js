@@ -1,15 +1,15 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const initializeFirebase = require("./config/firebase");
-const { initializeDefaultSuperAdmin } = require("./config/defaultSuperAccount");
+const initializeFirebase = require("./src/config/firebase");
+const { initializeDefaultSuperAdmin } = require("./src/initializations/defaultSuperAccount");
 require('dotenv').config();
 
 // connect to firebase
 initializeFirebase();
 
 initializeDefaultSuperAdmin().then(() => {
-  console.log('Server initialization completed.....\n');
+  console.log('✅ Server initialization completed.....\n');
 });
 
 const app = express();
@@ -18,8 +18,8 @@ app.use(cors({ origin: process.env.FRONTEND_URL || "http://localhost:3000", cred
 app.use(cookieParser());
 
 //Routes
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/auth", require("./src/routes/authRoutes"));
+app.use("/api/users", require("./src/routes/userRoutes"));
 
 //  Route handler for the root path
 app.get('/', (req, res) => {
