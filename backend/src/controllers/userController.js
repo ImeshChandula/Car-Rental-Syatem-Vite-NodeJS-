@@ -14,7 +14,7 @@ const getLoggedUserProfile = async (req, res) => {
         // remove password
         user.password = undefined;
 
-        res.status(200).json({msg: "User found:", user});
+        res.status(200).json({message: "User found:", user});
     } catch (error) {
         console.error('Error fetching user profile:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -105,7 +105,7 @@ const updateUserProfileImage = async (req, res) => {
         }
 
         if (!profilePicture) {
-            return res.status(400).json({msg: "Profile picture is required"});
+            return res.status(400).json({message: "Profile picture is required"});
         }
 
         // data object
@@ -123,10 +123,10 @@ const updateUserProfileImage = async (req, res) => {
         // remove password
         updatedUser.password = undefined;
 
-        res.status(201).json({msg: "Profile picture updated successfully", updatedUser})
+        res.status(200).json({message: "Profile picture updated successfully", updatedUser})
     } catch (error) {
         console.error(error.message);
-        res.status(500).send('Server error');
+        res.status(500).send({ message: 'Server error' });
     }
 };
 

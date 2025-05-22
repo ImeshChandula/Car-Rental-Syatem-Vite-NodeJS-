@@ -10,6 +10,7 @@ const Settings = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const { logout } = useAuthStore();
 
   const fetchUserProfile = async () => {
@@ -28,6 +29,100 @@ const Settings = () => {
   useEffect(() => {
     fetchUserProfile();
   }, []);
+
+  // Convert file to base64
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  // Compress and convert file to base64
+  /*const compressImage = (file, maxWidth = 1200, quality = 0.9) => { // Higher quality settings
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Calculate new dimensions
+        let { width, height } = img;
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Draw and compress
+        ctx.drawImage(img, 0, 0, width, height);
+        const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+        resolve(compressedBase64);
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  };*/
+
+  // Handle image upload
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select a valid image file');
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('Image size should be less than 10MB');
+      return;
+    }
+
+    try {
+      setUploadingImage(true);
+      
+      const base64Image = await convertToBase64(file);
+      //const base64Image = await compressImage(file);
+
+      const response = await axiosInstance.patch(`/users/updateUserProfileImage/${user.id}`, {
+        profilePicture: base64Image
+      });
+
+      console.log('Upload response:', response.data);
+
+      // Update user state with new profile picture
+      if (response.data && response.data.updatedUser) {
+        setUser(prevUser => ({
+          ...prevUser,
+          profilePicture: response.data.updatedUser.profilePicture || base64Image
+        }));
+      } else {
+        console.error('Unexpected response structure:', response.data);
+        // Fallback: just use the base64 image
+        setUser(prevUser => ({
+          ...prevUser,
+          profilePicture: base64Image
+        }));
+      }
+
+      toast.success('Profile picture updated successfully!');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error('Failed to update profile picture. Please try again.');
+    } finally {
+      setUploadingImage(false);
+      // Clear the input
+      event.target.value = '';
+    }
+  };
 
   // Handle case when authUser is null or doesn't have an id
   const deleteUser = async () => {
@@ -77,7 +172,22 @@ const Settings = () => {
             alt="Profile"
             className="profile-image"
           />
-          <button className="update-photo-btn">Update Photo</button>
+          <div className='update-photo-container'>
+            <input 
+              type='file'
+              id='profile-image-input'
+              accept='image/*'
+              onChange={handleImageUpload}
+              style={{ display: 'none' }}
+            />
+            <button 
+              className="update-photo-btn"
+              onClick={() => document.getElementById('profile-image-input').click()}
+              disabled={uploadingImage}
+              >
+                {uploadingImage ? 'Uploading' : 'Update Photo'}
+              </button>
+          </div>
         </div>
         <div className="profile-details">
           <h2>{user.name}</h2>
