@@ -14,6 +14,7 @@ import DashboardManager from "./routes/DashboardManager";
 import DashboardCustomer from "./routes/DashboardCustomer";
 import EmailVerify from './routes/EmailVerify';
 import ResetPassword from './routes/ResetPassword';
+import UpdateUser from './routes/UpdateUser';
 
 function App() {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
@@ -73,6 +74,7 @@ function App() {
 
         <Route path='/email/verify' element={!authUser ? <EmailVerify/> : <Navigate to="/" />} />
         <Route path='/reset/password' element={!authUser ? <ResetPassword /> : <ResetPassword />} />
+        <Route path='/editData/user' element={authUser ? <UpdateUser /> : <Navigate to="/login" />} />
 
         {/* Protected routes*/}
         <Route path='/owner/dashboard' element={authUser && authUser.role === "owner" ? <DashboardOwner/> : <Navigate to="/login" />} />

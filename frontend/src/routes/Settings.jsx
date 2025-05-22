@@ -229,6 +229,7 @@ const Settings = () => {
         </div>
       </div>
       <div className="profile-actions">
+        <button className="edit-button" onClick={() => navigate('/editData/user')}>Edit Profile</button>
         <button className="edit-button" onClick={() => navigate('/reset/password')}>Reset My Password</button>
         <button className="delete-button" onClick={handleDelete}>Delete My Account</button>
       </div>
