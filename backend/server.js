@@ -6,6 +6,7 @@ import  initializeFirebase from "./src/config/firebase.js";
 import { initializeDefaultSuperAdmin } from "./src/initializations/defaultSuperAccount.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
+import googleAuthRoutes from "./src/routes/googleAuthRoutes.js"
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(cookieParser());
 //Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/google", googleAuthRoutes)
 
 //  Route handler for the root path
 app.get('/', (req, res) => {

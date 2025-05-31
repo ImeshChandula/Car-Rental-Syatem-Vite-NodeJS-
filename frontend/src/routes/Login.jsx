@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
+import GoogleLogin from '../components/GoogleLogin';
 import { Car, Eye, EyeOff, Loader2, Lock, Mail } from 'lucide-react';
 import "../styles/Register.css";
+import "../styles/GoogleLogin.css";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -42,6 +44,15 @@ const Login = () => {
       console.error("Login submission error:", error);
       setMessage(error.message || "Login failed. Please check your credentials.");
     }
+  };
+
+  const handleGoogleSuccess = (result) => {
+    console.log('Google login successful:', result);
+  };
+
+  const handleGoogleError = (error) => {
+    console.error('Google login failed:', error);
+    setMessage("Google login failed. Please try again.");
   };
 
   return (
@@ -105,6 +116,22 @@ const Login = () => {
             <p className='forgot-password'>
               <Link to="/reset/password" className=''>Forgot password ?</Link>
             </p>
+          </div>
+
+          {/* Divider */}
+          <div className='divider'>
+            <div className='divider-line'></div>
+            <span className='divider-text'>or</span>
+            <div className='divider-line'></div>
+          </div>
+
+          {/* Google Login Section */}
+          <div className='google-login-section'>
+            <GoogleLogin 
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              disabled={isLoggingIn}
+            />
           </div>
 
           <button type='submit' className='btn' disabled={isLoggingIn}>

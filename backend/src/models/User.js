@@ -9,6 +9,7 @@ class User {
         this.licenseNumber = data.licenseNumber;
         this.profilePicture = data.profilePicture;
         this.role = data.role || 'customer'; // 'manager', 'owner'
+        this.googleId = data.googleId || '';
 
         this.verifyOtp = data.verifyOtp || '';
         this.verifyOtpExpiredAt = data.verifyOtpExpiredAt || new Date().toISOString();

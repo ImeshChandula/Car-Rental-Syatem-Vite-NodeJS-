@@ -51,6 +51,23 @@ const UserService = {
         }
     },
 
+    // Find user by Google ID
+    async findByGoogleId(googleId) {
+        try {
+            const userRef = await userCollection.where('googleId', '==', googleId).get();
+            
+            if (userRef.empty){
+                return null;
+            }
+
+            const userDoc = userRef.docs[0];
+            return new User(userDoc.id, userDoc.data());
+        } catch (error) {
+            console.error('Error finding user by Google ID:', error);
+            throw error;
+        }
+    },
+
     // Get all users
     async findAll() {
         try {
