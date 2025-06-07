@@ -5,16 +5,25 @@ import { Loader } from "lucide-react";
 import { Toaster } from 'react-hot-toast';
 
 import Navbar from "./components/Navbar";
-import Home from "./routes/Home";
+
+import Home from "./pages/Home";
+import Car from "./pages/Car";
+import About from './pages/About';
+import Services from "./pages/Services";
+import Contact from "./pages/Contact";
+
 import Login from "./routes/Login";
 import Register from "./routes/Register";
 import Settings from "./routes/Settings";
+
 import DashboardOwner from "./routes/DashboardOwner";
 import DashboardManager from "./routes/DashboardManager";
 import DashboardCustomer from "./routes/DashboardCustomer";
+
 import EmailVerify from './routes/EmailVerify';
 import ResetPassword from './routes/ResetPassword';
 import UpdateUser from './routes/UpdateUser';
+
 
 function App() {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
@@ -68,6 +77,11 @@ function App() {
       <Navbar />
       <Routes>
         <Route path='/' element={<Home/>} />
+        <Route path='/cars' element={<Car />} />
+        <Route path='/about' element={<About />} />
+        <Route path='/services' element={<Services />} />
+        <Route path='contact' element={<Contact />} />
+
         <Route path='/login' element={!authUser ? <Login/> : <Navigate to="/" />} />
         <Route path='/register' element={!authUser ? <Register/> : <Navigate to="/" />} />
         <Route path='/settings' element={authUser ? <Settings/> : <Navigate to="/login" />} />

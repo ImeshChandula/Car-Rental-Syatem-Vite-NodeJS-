@@ -1,5 +1,5 @@
 import UserService from '../services/userService.js';
-import uploadImage from '../utils/uploadMedia.js';
+import {uploadImage} from '../utils/uploadMedia.js';
 
 const userService = new UserService();
 
