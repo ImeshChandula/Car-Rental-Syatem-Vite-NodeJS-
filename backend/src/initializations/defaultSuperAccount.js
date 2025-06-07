@@ -2,12 +2,12 @@ import dotenv from 'dotenv';
 import UserService from '../services/userService.js';
 
 dotenv.config();
-
+const userService = new UserService();
 
 const createDefaultSuperAdmin = async () => {
     try {
         const email = process.env.SUPER_ADMIN_EMAIL;
-        const existingSuperAdmin = await UserService.findByEmail(email);
+        const existingSuperAdmin = await userService.findByEmail(email);
 
         if (!existingSuperAdmin) {
             const index = Math.floor(Math.random() * 100) + 1;
@@ -25,7 +25,7 @@ const createDefaultSuperAdmin = async () => {
                 role: 'owner',
             };
 
-            await UserService.create(superAdminData);
+            await userService.create(superAdminData);
             console.log("✅ Default Super Admin created.");
         } else {
             console.log("ℹ️ Default Super Admin already exists.");

@@ -3,6 +3,8 @@ import UserService from '../services/userService.js';
 import generateToken from '../utils/jwtTokenCreate.js';
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const userService = new UserService();
+
 
 // Register/Login with Google
 const googleAuth = async (req, res) => {
@@ -40,7 +42,7 @@ const googleAuth = async (req, res) => {
         }
 
         // Check if user already exists
-        let user = await UserService.findByEmail(email);
+        let user = await userService.findByEmail(email);
 
         if (user) {
             // User exists - this is a login
@@ -61,7 +63,7 @@ const googleAuth = async (req, res) => {
 
             // Update if there are changes
             if (Object.keys(updateData).length > 0) {
-                user = await UserService.updateById(user.id, updateData);
+                user = await userService.updateById(user.id, updateData);
             }
 
             // Generate JWT token
@@ -98,7 +100,7 @@ const googleAuth = async (req, res) => {
             };
 
             // Create new user
-            const user = await UserService.create(userData);
+            const user = await userService.create(userData);
 
             // Generate JWT token
             const payload = {
@@ -165,7 +167,7 @@ const linkGoogleAccount = async (req, res) => {
         }
 
         // Get current user
-        const user = await UserService.findById(userId);
+        const user = await userService.findById(userId);
         if (!user) {
             return res.status(404).json({
                 success: false,
@@ -174,7 +176,7 @@ const linkGoogleAccount = async (req, res) => {
         }
 
         // Check if Google account is already linked to another user
-        const existingGoogleUser = await UserService.findByEmail(email);
+        const existingGoogleUser = await userService.findByEmail(email);
         if (existingGoogleUser && existingGoogleUser.id !== userId) {
             return res.status(400).json({
                 success: false,
@@ -189,7 +191,7 @@ const linkGoogleAccount = async (req, res) => {
             isAccountVerified: true
         };
 
-        const updatedUser = await UserService.updateById(userId, updateData);
+        const updatedUser = await userService.updateById(userId, updateData);
 
         updatedUser.password = undefined;
         
@@ -213,7 +215,7 @@ const unlinkGoogleAccount = async (req, res) => {
     try {
         const userId = req.user.id; // From JWT middleware
 
-        const user = await UserService.findById(userId);
+        const user = await userService.findById(userId);
         if (!user) {
             return res.status(404).json({
                 success: false,
@@ -237,7 +239,7 @@ const unlinkGoogleAccount = async (req, res) => {
         }
 
         // Remove Google ID
-        const updatedUser = await UserService.updateById(userId, {
+        const updatedUser = await userService.updateById(userId, {
             googleId: ''
         });
 
