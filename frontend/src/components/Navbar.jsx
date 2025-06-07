@@ -48,60 +48,100 @@ const NavBar = () => {
     setIsMenuOpen(false);
   };
 
+  const handleLinkClick = () => {
+    setIsMenuOpen(false);
+  };
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   return (
-    <div className="navbar-container">
-      <header className="navbar">
-        <div className="navbar-content">
-          <div className="navbar-inner">
+      <header className="header">
+        <div className="container">
+          <div className="header-content">
 
-            <div className="navbar-inner-left">
-              <div className="navbar-logo">
+            <div className="header-left">
+              <div className="logo">
                 <Link to="/" className="logo-link">
                   <div className="logo-icon"><Car size={24} /></div>
-                  <h1 className="logo-text">Car Rental System</h1>
+                  <span className="logo-text">Car Rental System</span>
                 </Link>
               </div>
             </div>
-
-            <div className="navbar-inner-right">
-              <nav className={`navbar-nav ${isMenuOpen ? 'active' : ''}`}>
+            
+            <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
+              <a href="#home" className="nav-link" onClick={handleLinkClick}>Home</a>
+              <a href="#cars" className="nav-link" onClick={handleLinkClick}>Cars</a>
+              <a href="#about" className="nav-link" onClick={handleLinkClick}>About</a>
+              <a href="#services" className="nav-link" onClick={handleLinkClick}>Services</a>
+              <a href="#contact" className="nav-link" onClick={handleLinkClick}>Contact</a>
+              
+              {/* Mobile menu actions */}
+              <div className="mobile-actions">
                 {!authUser ? (
-                  <Link to="/login" className="nav-link login-link" onClick={() => setIsMenuOpen(false)}>
+                  <Link to="/login" className="btn-secondary mobile-btn" onClick={handleLinkClick}>
                     <LogIn size={20} />
                     <span>Log in</span>
                   </Link>
                 ) : (
                   <>
-                    <button className="nav-button dashboard-button" onClick={goToDashboard}>
+                    <button className="btn-secondary mobile-btn" onClick={goToDashboard}>
                       <CircleDashed size={20} />
                       <span>Dashboard</span>
                     </button>
 
-                    <button className='nav-button settings-button' onClick={handleSettings}>
+                    <button className='btn-secondary mobile-btn' onClick={handleSettings}>
                       <Settings size={20} />
                       <span>Settings</span>
                     </button>
 
-                    <button className="nav-button logout-button" onClick={handleLogout}>
+                    <button className="btn-primary mobile-btn" onClick={handleLogout}>
                       <LogOut size={20} />
                       <span>Logout</span>
                     </button>
                   </>
                 )}
-              </nav>
-              
-              <div className="navbar-menu-toggle" onClick={toggleMenu}>
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </div>
+            </nav>
+              
+            <div className="header-right">
+              <div className="header-actions">
+              {!authUser ? (
+                  <>
+                    <Link to="/login" className="btn-secondary" onClick={() => setIsMenuOpen(false)}>
+                      <LogIn size={20} />
+                      <span>Log in</span>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <button className="btn-secondary" onClick={goToDashboard}>
+                      <CircleDashed size={20} />
+                      <span>Dashboard</span>
+                    </button>
+
+                    <button className='btn-secondary' onClick={handleSettings}>
+                      <Settings size={20} />
+                      <span>Settings</span>
+                    </button>
+
+                    <button className="btn-primary" onClick={handleLogout}>
+                      <LogOut size={20} />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                )}
+                </div>
+
+                <button className="mobile-menu-toggle" onClick={toggleMenu}>
+                  {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
             </div>
+
           </div>
         </div>
       </header>
-    </div>
   )
 }
 
