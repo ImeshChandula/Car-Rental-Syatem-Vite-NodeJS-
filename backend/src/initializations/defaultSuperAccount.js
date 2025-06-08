@@ -26,12 +26,12 @@ const createDefaultSuperAdmin = async () => {
             };
 
             await userService.create(superAdminData);
-            console.log("✅ Default Super Admin created.");
+            console.log("✅ Default Account created.");
         } else {
-            console.log("ℹ️ Default Super Admin already exists.");
+            console.log("ℹ️ Default Account already exists.");
         }
     } catch (error) {
-        console.error("❌ Error creating default Super Admin:", error);
+        console.error("❌ Error creating default Account:", error);
     }
 };
 
@@ -39,9 +39,9 @@ const createDefaultSuperAdmin = async () => {
 const initializeDefaultSuperAdmin = async () => {
     try {
         await createDefaultSuperAdmin();
-        console.log("✅ Super admin initialization completed...");
+        console.log("✅ Default Account initialization completeD...");
     } catch (err) {
-        console.error("❌ Failed to initialize super admin:", err.message);
+        console.error("❌ Failed to initialize Default Account:", err.message);
     }
 };
 

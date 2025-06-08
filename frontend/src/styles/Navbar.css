@@ -62,7 +62,7 @@
 }
 
 .logo-icon {
-  font-size: 2rem;
+  font-size: 1.5rem;
   animation: bounce 2s infinite;
 }
 
@@ -79,8 +79,7 @@
 }
 
 .logo-text {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 1000;
 }
 
 .navbar-inner-right {

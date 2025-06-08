@@ -66,7 +66,7 @@ const NavBar = () => {
               <div className="navbar-logo">
                 <Link to="/" className="logo-link">
                   <div className="logo-icon">🚗</div>
-                  <span className="logo-text">{import.meta.env.VITE_APP_ORG_NAME}Pro</span>
+                  <span className="logo-text" style={{fontSize: '1.5rem'}}>{import.meta.env.VITE_APP_ORG_NAME}Pro</span>
                 </Link>
               </div>
             </div>

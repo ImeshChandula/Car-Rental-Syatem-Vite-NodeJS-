@@ -25,6 +25,7 @@ import ResetPassword from './routes/ResetPassword';
 import UpdateUser from './routes/UpdateUser';
 import Footer from './components/Footer';
 
+import "./styles/Loader.css";
 
 function App() {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore();

@@ -35,8 +35,7 @@ const About = () => {
               Your Trusted Car Rental Partner
             </h2>
             <p className="about-subtitle">
-              Experience the freedom of the road with our premium car rental service. 
-              We've been serving customers for over a decade with reliability, quality, and exceptional service.
+              {import.meta.env.VITE_APP_ABOUT_CONTENT}
             </p>
             <div className="about-stats">
               <div className="stat">
