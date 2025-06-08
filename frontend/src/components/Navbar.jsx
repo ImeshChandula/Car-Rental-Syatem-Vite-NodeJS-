@@ -66,7 +66,7 @@ const NavBar = () => {
               <div className="navbar-logo">
                 <Link to="/" className="logo-link">
                   <div className="logo-icon">🚗</div>
-                  <span className="logo-text">Car Rental System</span>
+                  <span className="logo-text">{import.meta.env.VITE_APP_ORG_NAME}Pro</span>
                 </Link>
               </div>
             </div>
@@ -76,7 +76,7 @@ const NavBar = () => {
                 
                 <a href="/" className="nav-link" onClick={handleLinkClick}>Home</a>
                 <a href="/cars" className="nav-link" onClick={handleLinkClick}>Cars</a>
-                <a href="/about" className="nav-link" onClick={handleLinkClick}>About</a>
+                <a href="/about" className="nav-link" onClick={handleLinkClick}>About Us</a>
                 <a href="/services" className="nav-link" onClick={handleLinkClick}>Services</a>
                 <a href="/contact" className="nav-link" onClick={handleLinkClick}>Contact</a>
                 

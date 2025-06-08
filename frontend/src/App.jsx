@@ -23,6 +23,7 @@ import DashboardCustomer from "./routes/DashboardCustomer";
 import EmailVerify from './routes/EmailVerify';
 import ResetPassword from './routes/ResetPassword';
 import UpdateUser from './routes/UpdateUser';
+import Footer from './components/Footer';
 
 
 function App() {
@@ -75,29 +76,30 @@ function App() {
       />
 
       <Navbar />
-      <Routes>
-        <Route path='/' element={<Home/>} />
-        <Route path='/cars' element={<Car />} />
-        <Route path='/about' element={<About />} />
-        <Route path='/services' element={<Services />} />
-        <Route path='contact' element={<Contact />} />
+        <Routes>
+          <Route path='/' element={<Home/>} />
+          <Route path='/cars' element={<Car />} />
+          <Route path='/about' element={<About />} />
+          <Route path='/services' element={<Services />} />
+          <Route path='contact' element={<Contact />} />
 
-        <Route path='/login' element={!authUser ? <Login/> : <Navigate to="/" />} />
-        <Route path='/register' element={!authUser ? <Register/> : <Navigate to="/" />} />
-        <Route path='/settings' element={authUser ? <Settings/> : <Navigate to="/login" />} />
+          <Route path='/login' element={!authUser ? <Login/> : <Navigate to="/" />} />
+          <Route path='/register' element={!authUser ? <Register/> : <Navigate to="/" />} />
+          <Route path='/settings' element={authUser ? <Settings/> : <Navigate to="/login" />} />
 
-        <Route path='/email/verify' element={!authUser ? <EmailVerify/> : <Navigate to="/" />} />
-        <Route path='/reset/password' element={!authUser ? <ResetPassword /> : <ResetPassword />} />
-        <Route path='/editData/user' element={authUser ? <UpdateUser /> : <Navigate to="/login" />} />
+          <Route path='/email/verify' element={!authUser ? <EmailVerify/> : <Navigate to="/" />} />
+          <Route path='/reset/password' element={!authUser ? <ResetPassword /> : <ResetPassword />} />
+          <Route path='/editData/user' element={authUser ? <UpdateUser /> : <Navigate to="/login" />} />
 
-        {/* Protected routes*/}
-        <Route path='/owner/dashboard' element={authUser && authUser.role === "owner" ? <DashboardOwner/> : <Navigate to="/login" />} />
-        <Route path='/manager/dashboard' element={authUser && authUser.role === "manager" ? <DashboardManager/> : <Navigate to="/login" />} />
-        <Route path='/customer/dashboard' element={authUser && authUser.role === "customer" ? <DashboardCustomer/> : <Navigate to="/login" />} />
-        
-        {/* Catch-all route */}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+          {/* Protected routes*/}
+          <Route path='/owner/dashboard' element={authUser && authUser.role === "owner" ? <DashboardOwner/> : <Navigate to="/login" />} />
+          <Route path='/manager/dashboard' element={authUser && authUser.role === "manager" ? <DashboardManager/> : <Navigate to="/login" />} />
+          <Route path='/customer/dashboard' element={authUser && authUser.role === "customer" ? <DashboardCustomer/> : <Navigate to="/login" />} />
+          
+          {/* Catch-all route */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      <Footer />
       
     </div>
   )
