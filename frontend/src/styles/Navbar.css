@@ -1,4 +1,4 @@
-/* NavBar.css */
+/* NavBar.css - Fixed Version */
 :root {
   --primary-color: #3c8cca;
   --primary-hover: #2563eb;
@@ -13,10 +13,12 @@
 }
 
 .navbar-container {
-  position: sticky;
+  position: fixed !important; /* Changed from sticky to fixed */
   top: 0;
+  left: 0 !important; /* Added left: 0 */
+  right: 0 !important; /* Added right: 0 */
   width: 100%;
-  z-index: 1000;
+  z-index: 9999 !important; /* Increased z-index to ensure it stays on top */
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   box-shadow: var(--shadow);
 }
@@ -27,7 +29,7 @@
 }
 
 .navbar-content {
-  max-width: 1280px;
+  /*max-width: 1280px;*/
   margin: 0 auto;
   padding: 0 1.5rem;
 }
@@ -207,6 +209,11 @@
   background-color: rgba(0, 0, 0, 0.05);
 }
 
+/* IMPORTANT: Add padding to body to prevent content from hiding behind fixed navbar */
+body {
+  padding-top: 70px; /* Add this to your body styles */
+}
+
 /* Responsive design */
 @media (max-width: 1200px) {
   .navbar-menu-toggle {
@@ -232,6 +239,7 @@
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
     transition: var(--transition);
     gap: 1.5rem;
+    z-index: 9998; /* Added z-index for mobile menu */
   }
 
   .navbar-nav.active {
@@ -246,6 +254,11 @@
 
   .logo-text {
     font-size: 1.1rem;
+  }
+  
+  /* Adjust body padding for mobile */
+  body {
+    padding-top: 70px;
   }
 }
 
@@ -265,6 +278,11 @@
   .navbar-nav {
     top: 60px;
     height: calc(100vh - 60px);
+  }
+  
+  /* Adjust body padding for small mobile */
+  body {
+    padding-top: 60px;
   }
 }
 
