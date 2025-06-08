@@ -1,5 +1,5 @@
 import UserService from '../services/userService.js';
-import transporter from '../config/nodemailer.js';
+import sendOtp from '../utils/sendOtp.js';
 
 const userService = new UserService();
 
@@ -30,16 +30,18 @@ const sendVerifyOtp = async (req, res) => {
             return res.status(400).json({success: false, message: "OTP creation failed"});
         }
 
-        const mailOptions = {
-            from: process.env.SENDER_EMAIL,
+        const mailData = {
             to: updatedUser.email,
             subject: "Account Verification OTP",
-            text: `Your OTP is: ${otp}. Verify your account using this OTP.`
+            otp: otp,
+            time: "2 mins 30 seconds"
         };
 
-        const result = await transporter.sendMail(mailOptions);
+        const mailAction = "verify";
+
+        const result = await sendOtp(mailData, mailAction);
         if (!result) {
-            return res.status(400).json({ message: 'Verification OTP sending failed' });
+            return res.status(400).json({ success: false, message: 'Verification OTP sending failed' });
         }
 
         res.status(200).json({success: true, message: "Verification OTP sent to email"});
@@ -119,14 +121,19 @@ const forgotPassword = async (req, res) => {
             return res.status(400).json({success: false, message: "OTP creation failed"});
         }
 
-        const mailOptions = {
-            from: process.env.SENDER_EMAIL,
+        const mailData = {
             to: updatedUser.email,
             subject: "Password Reset OTP",
-            text: `Your OTP for resetting password is: ${otp}. Use this OTP to reset your Password.`
+            otp: otp,
+            time: "2 mins 30 seconds"
         };
 
-        await transporter.sendMail(mailOptions);
+        const mailAction = "reset";
+
+        const result = await sendOtp(mailData, mailAction);
+        if (!result) {
+            return res.status(400).json({ success: false, message: 'Verification OTP sending failed' });
+        }
 
         res.status(200).json({success: true, message: "Reset password OTP sent to your email"});
     } catch (error) {

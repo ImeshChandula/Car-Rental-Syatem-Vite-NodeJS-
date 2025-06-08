@@ -117,7 +117,7 @@ class UserService {
             
             updateData.updatedAt = new Date().toISOString();
         
-            await userCollection.doc(id).update(updateData);
+            await this.collection.doc(id).update(updateData);
         
             const updatedUser = await this.findById(id);
             return updatedUser;
