@@ -66,11 +66,14 @@ const Register = () => {
       const result = await signup(formData);
       if (result && result.user) {
         setMessage("New account created successfully.");
+        toast.success(result.message);
         navigate('/email/verify');
       }
     } catch (error) {
       console.error('Registration failed:', error);
-      // Error is already handled in the signup function with toast
+      const errorMessage = error.response?.data?.message || error.message || "Login failed. Please check your credentials.";
+      setMessage(errorMessage);
+      toast.error(errorMessage);
     }
   };
 
