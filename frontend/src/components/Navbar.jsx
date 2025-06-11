@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Link, useNavigate } from 'react-router-dom';
-import { Car, CircleDashed, LogIn, LogOut, Menu, Settings, X } from 'lucide-react';
+import { CircleDashed, LogIn, LogOut, Menu, Settings, X } from 'lucide-react';
+import toast from 'react-hot-toast';
 import "../styles/NavBar.css";
 
 const NavBar = () => {
@@ -45,6 +46,7 @@ const NavBar = () => {
 
   const handleLogout = () => {
     logout();
+    toast.success("Logout successful")
     setIsMenuOpen(false);
   };
 

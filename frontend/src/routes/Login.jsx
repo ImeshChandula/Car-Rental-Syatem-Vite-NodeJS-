@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import GoogleLogin from '../components/GoogleLogin';
@@ -38,21 +39,26 @@ const Login = () => {
       const result = await login(loginData);
       if (result && result.user){
         setMessage("User logged successfully.");
+        toast.success(result.message);
       }
       // We'll let the toast in the auth store handle success messages
     } catch (error) {
       console.error("Login submission error:", error);
-      setMessage(error.message || "Login failed. Please check your credentials.");
+      const errorMessage = error.response?.data?.message || error.message || "Login failed. Please check your credentials.";
+      setMessage(errorMessage);
+      toast.error(errorMessage);
     }
   };
 
   const handleGoogleSuccess = (result) => {
     console.log('Google login successful:', result);
+    toast.success('Google login successful:', result);
   };
 
   const handleGoogleError = (error) => {
     console.error('Google login failed:', error);
     setMessage("Google login failed. Please try again.");
+    toast.error("Google login failed. Please try again.");
   };
 
   return (
