@@ -1,19 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef  } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Link, useNavigate } from 'react-router-dom';
-import { CircleDashed, LogIn, LogOut, Menu, Settings, X } from 'lucide-react';
+import { CircleDashed, LogIn, LogOut, Menu, Settings, X, User, ChevronDown } from 'lucide-react';
 import toast from 'react-hot-toast';
 import "../styles/NavBar.css";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
   const { logout, authUser } = useAuthStore();
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   // Debug log to see authUser value
   useEffect(() => {
     console.log("NavBar authUser:", authUser);
   }, [authUser]);
+
+  // check screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 1200);
+    };
+
+    // Check on mount
+    checkScreenSize();
+
+    // Add event listener
+    window.addEventListener('resize', checkScreenSize);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  // handle Click Outside for dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const goToDashboard = () => {
     if (authUser && authUser.role) {
@@ -42,12 +76,14 @@ const NavBar = () => {
   const handleSettings = () => {
     navigate("/settings");
     setIsMenuOpen(false);
+    setIsDropdownOpen(false);
   };
 
   const handleLogout = () => {
     logout();
     toast.success("Logout successful")
     setIsMenuOpen(false);
+    setIsDropdownOpen(false);
   };
 
   const handleLinkClick = () => {
@@ -57,6 +93,11 @@ const NavBar = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
 
   return (
     <div className="navbar-container">
@@ -83,26 +124,65 @@ const NavBar = () => {
                 <a href="/contact" className="nav-link" onClick={handleLinkClick}>Contact</a>
                 
                 {!authUser ? (
-                  <Link to="/login" className="btn-secondary" onClick={() => setIsMenuOpen(false)}>
+                  <Link to="/login" className="btn-secondary nav-dropdown-trigger" onClick={() => setIsMenuOpen(false)}>
                     <LogIn size={20} />
                     <span>Log in</span>
                   </Link>
                 ) : (
                   <>
-                    <button className="btn-secondary" onClick={goToDashboard}>
-                      <CircleDashed size={20} />
-                      <span>Dashboard</span>
-                    </button>
+                    {isMobile ? (
+                      <>
+                        <span className='mobile-menu-divider'></span>
 
-                    <button className='btn-secondary' onClick={handleSettings}>
-                      <Settings size={20} />
-                      <span>Settings</span>
-                    </button>
+                        <button className="btn-secondary" onClick={goToDashboard}>
+                          <CircleDashed size={20} />
+                          <span>Dashboard</span>
+                        </button>
 
-                    <button className="btn-primary" onClick={handleLogout}>
-                      <LogOut size={20} />
-                      <span>Logout</span>
-                    </button>
+                        <button className='btn-secondary' onClick={handleSettings}>
+                          <Settings size={20} />
+                          <span>Settings</span>
+                        </button>
+
+                        <button className="btn-primary" onClick={handleLogout}>
+                          <LogOut size={20} />
+                          <span>Logout</span>
+                        </button>
+                      </>
+                    ) : (
+                      <div div className="nav-dropdown-container" ref={dropdownRef}>
+                        <button 
+                          className="btn-secondary nav-dropdown-trigger" 
+                          onClick={toggleDropdown}
+                          aria-expanded={isDropdownOpen}
+                        >
+                          <User size={20} />
+                          <span>Account</span>
+                          <ChevronDown size={16} className={`nav-dropdown-arrow ${isDropdownOpen ? 'rotated' : ''}`} />
+                        </button>
+
+                        {isDropdownOpen && (
+                          <div className="nav-dropdown-menu">
+                            <button className="nav-dropdown-item" onClick={goToDashboard}>
+                              <CircleDashed size={20} />
+                              <span>Dashboard</span>
+                            </button>
+
+                            <button className='nav-dropdown-item' onClick={handleSettings}>
+                              <Settings size={20} />
+                              <span>Settings</span>
+                            </button>
+
+                            <div className="nav-dropdown-divider"></div>
+
+                            <button className="nav-dropdown-item nav-logout-item" onClick={handleLogout}>
+                              <LogOut size={20} />
+                              <span>Logout</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </>
                 )}
               </nav>

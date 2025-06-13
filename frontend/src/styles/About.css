@@ -12,11 +12,14 @@
 }
 
 .about-hero {
+  max-width: 1200px;
+  margin: 0 auto 0.2rem auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4rem;
   align-items: center;
-  margin-bottom: 5rem;
+  justify-content: center;
+  gap: 0.2rem;
+  margin-bottom: 100px;
 }
 
 .about-title {
