@@ -3,7 +3,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { Link, useNavigate } from 'react-router-dom';
 import { CircleDashed, LogIn, LogOut, Menu, Settings, X, User, ChevronDown } from 'lucide-react';
 import toast from 'react-hot-toast';
-import "../styles/NavBar.css";
+import "../styles/Navbar.css";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,9 +15,9 @@ const NavBar = () => {
   const dropdownRef = useRef(null);
 
   // Debug log to see authUser value
-  useEffect(() => {
-    console.log("NavBar authUser:", authUser);
-  }, [authUser]);
+  //useEffect(() => {
+  //  console.log("NavBar authUser:", authUser);
+  //}, [authUser]);
 
   // check screen size
   useEffect(() => {
@@ -150,7 +150,7 @@ const NavBar = () => {
                         </button>
                       </>
                     ) : (
-                      <div div className="nav-dropdown-container" ref={dropdownRef}>
+                      <div className="nav-dropdown-container" ref={dropdownRef}>
                         <button 
                           className="btn-secondary nav-dropdown-trigger" 
                           onClick={toggleDropdown}
