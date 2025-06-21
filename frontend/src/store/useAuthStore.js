@@ -12,7 +12,7 @@ export const useAuthStore = create((set) => ({
 
     checkAuth: async () =>{
         try {
-            const res = await axiosInstance.get("/auth/checkCurrent");
+            const res = await axiosInstance.get("/auth/checkAuth");
 
             if (res.data && res.status === 200) {
                 // Only set authUser if the account is verified

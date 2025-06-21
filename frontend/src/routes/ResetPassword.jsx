@@ -98,7 +98,7 @@ const ResetPassword = () => {
         
         setLoading(true);
         try {
-            const response = await axiosInstance.post('/auth/sendResetOtp', { email });
+            const response = await axiosInstance.post('/password/sendResetOtp', { email });
             
             if (response.data && response.data.success) {
                 toast.success(response.data.message || 'Reset OTP sent successfully');
@@ -129,7 +129,7 @@ const ResetPassword = () => {
         
         setLoading(true);
         try {
-            const response = await axiosInstance.post('/auth/resetPassword', { 
+            const response = await axiosInstance.post('/password/resetPassword', { 
                 email,
                 otp: otpValue,
                 newPassword

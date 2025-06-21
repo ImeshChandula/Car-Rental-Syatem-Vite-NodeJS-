@@ -56,7 +56,7 @@ const EmailVerify = () => {
         // Auto-focus next input
         if (value && index < 5) {
             const nextInput = document.getElementById(`otp-${index + 1}`);
-        if (nextInput) nextInput.focus();
+          if (nextInput) nextInput.focus();
         }
     };
     
@@ -64,10 +64,10 @@ const EmailVerify = () => {
     const handleKeyDown = (index, e) => {
         // Handle backspace
         if (e.key === 'Backspace') {
-        if (!otp[index] && index > 0) {
-            const prevInput = document.getElementById(`otp-${index - 1}`);
-            if (prevInput) prevInput.focus();
-        }
+          if (!otp[index] && index > 0) {
+              const prevInput = document.getElementById(`otp-${index - 1}`);
+              if (prevInput) prevInput.focus();
+          }
         }
     };
     
@@ -80,7 +80,7 @@ const EmailVerify = () => {
         
         setLoading(true);
         try {
-            const response = await axiosInstance.post('/auth/sendVerifyOtp', { email });
+            const response = await axiosInstance.post('/password/sendVerifyOtp', { email });
             
             if (response.data && response.data.success) {
                 toast.success(response.data.message || 'OTP sent successfully');
@@ -107,7 +107,7 @@ const EmailVerify = () => {
         
         setLoading(true);
         try {
-            const response = await axiosInstance.post('/auth/verifyEmail', { 
+            const response = await axiosInstance.post('/password/verifyEmail', { 
                 email,
                 otp: otpValue
             });
