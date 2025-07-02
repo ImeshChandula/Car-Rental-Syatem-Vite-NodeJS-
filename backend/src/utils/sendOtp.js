@@ -1,4 +1,4 @@
-import { EMAIL_VERIFY_TEMPLATE, PASSWORD_RESET_TEMPLATE } from '../config/emailTemplates.js';
+import { EMAIL_VERIFY_TEMPLATE, PASSWORD_RESET_TEMPLATE } from '../templates/emailTemplates.js';
 import transporter from '../config/nodemailer.js';
 import dotenv from 'dotenv';
 
