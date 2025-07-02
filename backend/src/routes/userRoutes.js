@@ -1,6 +1,6 @@
 import express from 'express';
 import { authenticateUser, authorizeRoles } from "../middleware/authMiddleware.js";
-import { validateUserData } from "../middleware/validator.js";
+import { validateUserUpdate } from '../validators/authValidator.js';
 import { deleteUserById, getAllUsers, getLoggedUserProfile, updateUserById, updateUserProfileImage }  from "../controllers/userController.js";
 
 const router = express.Router();
@@ -20,12 +20,12 @@ router.get("/getAllUsers", authenticateUser, authorizeRoles("owner"), getAllUser
 //@route   PATCH api/users/updateUserById/:id
 //@desc    Update user
 //@access  private 
-router.patch("/updateUserById/:id", validateUserData, authenticateUser, updateUserById);
+router.patch("/updateUserById/:id", validateUserUpdate, authenticateUser, updateUserById);
 
 //@route   PATCH api/users/updateUserProfileImage/:id
 //@desc    Update User Profile Image
 //@access  private 
-router.patch("/updateUserProfileImage/:id", validateUserData, authenticateUser, updateUserProfileImage);
+router.patch("/updateUserProfileImage/:id", validateUserUpdate, authenticateUser, updateUserProfileImage);
 
 //@route   DELETE api/users/deleteUserById/:id
 //@desc    Update user

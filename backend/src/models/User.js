@@ -8,17 +8,17 @@ class User {
         this.phone = data.phone;
         this.licenseNumber = data.licenseNumber;
         this.profilePicture = data.profilePicture;
-        this.role = data.role || 'customer'; // 'manager', 'owner'
-        this.googleId = data.googleId || '';
+        this.role = data.role;
+        this.googleId = data.googleId;
 
-        this.verifyOtp = data.verifyOtp || '';
-        this.verifyOtpExpiredAt = data.verifyOtpExpiredAt || new Date().toISOString();
-        this.isAccountVerified = data.isAccountVerified || false;
-        this.resetOtp = data.resetOtp || '';
-        this.resetOtpExpiredAt = data.resetOtpExpiredAt || new Date().toISOString();
+        this.verifyOtp = data.verifyOtp;
+        this.verifyOtpExpiredAt = data.verifyOtpExpiredAt;
+        this.isAccountVerified = data.isAccountVerified;
+        this.resetOtp = data.resetOtp;
+        this.resetOtpExpiredAt = data.resetOtpExpiredAt;
 
         this.createdAt = data.createdAt || new Date().toISOString();
-        this.updatedAt = new Date().toISOString();
+        this.updatedAt = data.updatedAt || new Date().toISOString();
     };
     
 };

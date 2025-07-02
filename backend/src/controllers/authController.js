@@ -105,10 +105,18 @@ const logout = async (req, res) => {
 
 
 //@desc     Get current user profile
-const checkCurrent = async (req, res) => {
+const checkAuth = async (req, res) => {
   try {
-    const user = req.user;
-    user.password = undefined;
+    const userId = req.user.id;
+    
+    const userData = await userService.findById(userId);
+
+    const user = {
+        id: userData.id,
+        username: userData.name,
+        role: userData.role,
+        isAccountVerified: userData.isAccountVerified
+    };
     
     res.status(200).json(user);
   } catch (error) {
@@ -119,4 +127,4 @@ const checkCurrent = async (req, res) => {
 
 
 
-export { register, login, logout, checkCurrent, };
+export { register, login, logout, checkAuth, };
