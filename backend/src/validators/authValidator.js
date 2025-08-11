@@ -1,43 +1,29 @@
 import Joi from 'joi';
+import imageSchema from './schemas/image.schema';
+import phoneSchema from './schemas/phoneNumber.schema';
+import dateSchema from './schemas/date.schema';
 
 // CREATE VALIDATOR - With defaults
 const validateUser = (req, res, next) => {
+  if (!req.body || Object.keys(req.body).length === 0) {
+    return res.status(400).json({ success: false, message: "Validation failed"});
+  }
+
   const schema = Joi.object({
     name: Joi.string().min(2).max(50).required(),
     email: Joi.string().email().lowercase().required(),
     password: Joi.string().min(6).max(128).required(),
-    phone: Joi.string().pattern(/^[\+]?[1-9][\d]{0,15}$/).required(), // Basic international phone format
+    phone: phoneSchema.required(),
     licenseNumber: Joi.string().min(3).max(20).required(),
     role: Joi.string().valid('customer', 'manager', 'owner').default('customer'),
-    profilePicture: Joi.alternatives().try(
-              Joi.string().uri(),                         // media link
-              Joi.string().pattern(/^data:.*;base64,.*/), // base64 image/video
-              Joi.array().items(
-                Joi.alternatives().try(
-                  Joi.string().uri(),                         // media URL in array
-                  Joi.string().pattern(/^data:.*;base64,.*/), // base64 in array
-                  Joi.object({                                // file object from multer
-                    path: Joi.string().required()
-                  })
-                )
-              ),
-              Joi.valid(null)
-            ).optional(),
+    profilePicture: imageSchema.optional(),
     
     googleId: Joi.string().allow('').default(''),
     verifyOtp: Joi.string().allow('').default(''),
-    verifyOtpExpiredAt: Joi.alternatives().try(
-      Joi.date(),
-      Joi.string().isoDate(),
-      Joi.valid(null)
-    ).default(null),
+    verifyOtpExpiredAt: dateSchema.default(null),
     isAccountVerified: Joi.boolean().default(false),
     resetOtp: Joi.string().allow('').default(''),
-    resetOtpExpiredAt: Joi.alternatives().try(
-      Joi.date(),
-      Joi.string().isoDate(),
-      Joi.valid(null)
-    ).default(null),
+    resetOtpExpiredAt: dateSchema.default(null),
   });
 
   // THE KEY CHANGE: Use the validated value with defaults applied
@@ -67,42 +53,25 @@ const validateUser = (req, res, next) => {
 
 // UPDATE VALIDATOR - NO defaults, all fields optional
 const validateUserUpdate = (req, res, next) => {
+  if (!req.body || Object.keys(req.body).length === 0) {
+    return res.status(400).json({ success: false, message: "Validation failed"});
+  }
+
   const schema = Joi.object({
     name: Joi.string().min(2).max(50).optional(),
     email: Joi.string().email().lowercase().optional(),
     password: Joi.string().min(6).max(128).optional(),
-    phone: Joi.string().pattern(/^[\+]?[1-9][\d]{0,15}$/).optional(), // Basic international phone format
+    phone: phoneSchema.optional(),
     licenseNumber: Joi.string().min(3).max(20).optional(),
     role: Joi.string().valid('customer', 'manager', 'owner').optional(),
-    profilePicture: Joi.alternatives().try(
-              Joi.string().uri(),                         // media link
-              Joi.string().pattern(/^data:.*;base64,.*/), // base64 image/video
-              Joi.array().items(
-                Joi.alternatives().try(
-                  Joi.string().uri(),                         // media URL in array
-                  Joi.string().pattern(/^data:.*;base64,.*/), // base64 in array
-                  Joi.object({                                // file object from multer
-                    path: Joi.string().required()
-                  })
-                )
-              ),
-              Joi.valid(null)
-            ).optional(),
+    profilePicture: imageSchema.optional(),
     
     googleId: Joi.string().allow('').optional(),
     verifyOtp: Joi.string().allow('').optional(),
-    verifyOtpExpiredAt: Joi.alternatives().try(
-      Joi.date(),
-      Joi.string().isoDate(),
-      Joi.valid(null)
-    ).optional(),
+    verifyOtpExpiredAt: dateSchema.optional(),
     isAccountVerified: Joi.boolean().optional(),
     resetOtp: Joi.string().allow('').optional(),
-    resetOtpExpiredAt: Joi.alternatives().try(
-      Joi.date(),
-      Joi.string().isoDate(),
-      Joi.valid(null)
-    ).optional(),
+    resetOtpExpiredAt: dateSchema.optional()
   })
   .min(1) // Require at least one field to update
   .options({ stripUnknown: true });; 

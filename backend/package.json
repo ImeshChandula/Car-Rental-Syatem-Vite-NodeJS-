@@ -26,6 +26,7 @@
     "google-auth-library": "^9.15.1",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
+    "libphonenumber-js": "^1.12.10",
     "nodemailer": "^7.0.3"
   }
 }
