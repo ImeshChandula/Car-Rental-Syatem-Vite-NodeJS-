@@ -38,12 +38,32 @@ class UserService extends BaseService{
 
     // Get a user by email
     async findByEmail(email) {
-        return this.findByFilter('email', '==', email);
+        try {
+            const docs = await this.findByFilter('email', '==', email);
+        
+            if (docs.length === 0){
+                return null
+            }
+
+            return docs[0];
+        } catch (error){
+            throw error;
+        }
     }
 
     // Find user by Google ID
     async findByGoogleId(googleId) {
-        return this.findByFilter('googleId', '==', googleId);
+        try {
+            const docs = await this.findByFilter('googleId', '==', googleId);
+        
+            if (docs.length === 0){
+                return null
+            }
+
+            return docs[0];
+        } catch (error){
+            throw error;
+        }
     }
 
     // Override update user with hashed password
