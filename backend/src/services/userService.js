@@ -1,34 +1,32 @@
-import initializeFirebase from "../config/firebase.js";
+import BaseService from './BaseService.js';
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 
-const { db } = initializeFirebase();
-//const userCollection = db.collection('users');
 
-class UserService {
+
+class UserService extends BaseService{
     constructor () {
-        this.collection = db.collection('users');
+        super('users', User, {
+            createdAtField: 'createdAt',
+            updatedAtField: 'updatedAt'
+        });
     }
 
-    // Create a new user
+    // Override create user with hashed password
     async create(userData) {
         try {
-            // Validate userData
-            if (!userData || !userData.email || !userData.password) {
-                throw new Error('Email and password are required');
-            }
-
             const salt = await bcrypt.genSalt(10);
             userData.password = await bcrypt.hash(userData.password, salt);
 
-            const userRef = await this.collection.add({...userData,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
+            const timestamp = new Date().toISOString();
+            const userRef = await this.collection.add({
+                ...userData,
+                [this.timestampFields.createdAt]: timestamp,
+                [this.timestampFields.updatedAt]: timestamp
             });
 
-            return new User(userRef.id, userData);
+            return new this.ModelClass(userRef.id, userData);
         } catch (error) {
-            console.error('Error creating user:', error);
             throw error;
         }
     }
@@ -40,67 +38,15 @@ class UserService {
 
     // Get a user by email
     async findByEmail(email) {
-        try {
-            const userRef = await this.collection.where('email', '==', email).get();
-            
-            if (userRef.empty){
-                return null;
-            }
-
-            const userDoc = userRef.docs[0];
-            return new User(userDoc.id, userDoc.data());
-        } catch (error) {
-            throw error;
-        }
+        return this.findByFilter('email', '==', email);
     }
 
     // Find user by Google ID
     async findByGoogleId(googleId) {
-        try {
-            const userRef = await this.collection.where('googleId', '==', googleId).get();
-            
-            if (userRef.empty){
-                return null;
-            }
-
-            const userDoc = userRef.docs[0];
-            return new User(userDoc.id, userDoc.data());
-        } catch (error) {
-            throw error;
-        }
+        return this.findByFilter('googleId', '==', googleId);
     }
 
-    // Get all users
-    async findAll() {
-        try {
-            const usersRef = await this.collection.get();
-
-            if (usersRef.empty) {
-                return [];
-            }
-
-            return usersRef.docs.map(doc => new User(doc.id, doc.data()));
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    // Get a user by ID
-    async findById(id) {
-        try {
-            const userDoc = await this.collection.doc(id).get();
-            if (!userDoc.exists) {
-                return null;
-            }
-        
-            const userData = userDoc.data();
-            return new User(userDoc.id, userData);
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    // Update a user
+    // Override update user with hashed password
     async updateById(id, updateData) {
         try {
             const userDoc = await this.collection.doc(id).get();
@@ -115,7 +61,7 @@ class UserService {
                 updateData.password = await bcrypt.hash(updateData.password, salt);
             }
             
-            updateData.updatedAt = new Date().toISOString();
+            updateData[this.timestampFields.updatedAt] = new Date().toISOString();
         
             await this.collection.doc(id).update(updateData);
         
@@ -126,22 +72,6 @@ class UserService {
         }
     }
 
-    // Delete a user
-    async deleteById(id) {
-        try {
-            const userDoc = await this.collection.doc(id).get();
-
-            if (!userDoc.exists) {
-                return false;
-            }
-
-            await this.collection.doc(id).delete();
-            return true;
-        } catch (error) {
-            console.error('Error deleting user:', error);
-            throw error;
-        }
-    }
 };
 
 export default UserService;

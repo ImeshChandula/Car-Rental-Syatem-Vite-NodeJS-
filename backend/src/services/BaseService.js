@@ -7,8 +7,8 @@ class BaseService {
         this.collection = db.collection(collectionName);
         this.ModelClass = ModelClass;
         this.timestampFields = {
-            createdAt: options.createdAtField || 'created_at',
-            updatedAt: options.updatedAtField || 'updated_at'
+            createdAt: options.createdAtField || 'createdAt',
+            updatedAt: options.updatedAtField || 'updatedAt'
         };
     }
 
