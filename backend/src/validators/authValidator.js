@@ -1,7 +1,7 @@
 import Joi from 'joi';
-import imageSchema from './schemas/image.schema';
-import phoneSchema from './schemas/phoneNumber.schema';
-import dateSchema from './schemas/date.schema';
+import imageSchema from './schemas/image.schema.js';
+import phoneSchema from './schemas/phoneNumber.schema.js';
+import dateSchema from './schemas/date.schema.js';
 
 // CREATE VALIDATOR - With defaults
 const validateUser = (req, res, next) => {
