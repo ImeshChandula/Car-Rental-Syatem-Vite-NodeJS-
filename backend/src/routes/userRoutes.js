@@ -1,35 +1,19 @@
 import express from 'express';
+import USER_ROLES from '../enums/UserRoles.js';
 import { authenticateUser, authorizeRoles } from "../middleware/authMiddleware.js";
 import { validateUserUpdate } from '../validators/authValidator.js';
 import { deleteUserById, getAllUsers, getLoggedUserProfile, updateUserById, updateUserProfileImage }  from "../controllers/userController.js";
 
 const router = express.Router();
 
-//http://localhost:5000
+const owner = USER_ROLES.OWNER;
 
-//@route   POST api/users/getLoggedUserProfile
-//@desc    Get Logged User Profile
-//@access  private 
+//http://localhost:5000/api/users
+
 router.get("/getLoggedUserProfile", authenticateUser, getLoggedUserProfile);
-
-//@route   POST api/users/getAllUsers
-//@desc    Get all users
-//@access  private - Admin only
-router.get("/getAllUsers", authenticateUser, authorizeRoles("owner"), getAllUsers);
-
-//@route   PATCH api/users/updateUserById/:id
-//@desc    Update user
-//@access  private 
+router.get("/getAllUsers", authenticateUser, authorizeRoles(owner), getAllUsers);
 router.patch("/updateUserById/:id", validateUserUpdate, authenticateUser, updateUserById);
-
-//@route   PATCH api/users/updateUserProfileImage/:id
-//@desc    Update User Profile Image
-//@access  private 
 router.patch("/updateUserProfileImage/:id", validateUserUpdate, authenticateUser, updateUserProfileImage);
-
-//@route   DELETE api/users/deleteUserById/:id
-//@desc    Update user
-//@access  private 
 router.delete("/deleteUserById/:id", authenticateUser, deleteUserById);
 
 

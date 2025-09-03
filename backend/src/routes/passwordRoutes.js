@@ -3,7 +3,7 @@ import { forgotPassword, resetPassword, sendVerifyOtp, verifyEmail } from '../co
 
 const router = express.Router();
 
-// http://localhost:5000/api/auth
+// http://localhost:5000/api/password
 
 
 

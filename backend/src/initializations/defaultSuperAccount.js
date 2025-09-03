@@ -1,12 +1,13 @@
-import dotenv from 'dotenv';
+import SUPER_ADMIN_DATA from '../data/SuperAdmin.js';
+import USER_ROLES from '../enums/UserRoles.js';
 import UserService from '../services/userService.js';
 
-dotenv.config();
+
 const userService = new UserService();
 
 const createDefaultSuperAdmin = async () => {
     try {
-        const email = process.env.SUPER_ADMIN_EMAIL;
+        const email = SUPER_ADMIN_DATA.EMAIL;
         const existingSuperAdmin = await userService.findByEmail(email);
 
         if (!existingSuperAdmin) {
@@ -15,20 +16,20 @@ const createDefaultSuperAdmin = async () => {
 
             // create user data object
             const superAdminData  = {
-                name: process.env.SUPER_ADMIN_NAME ,
-                email: process.env.SUPER_ADMIN_EMAIL,
-                password: process.env.SUPER_ADMIN_PASSWORD,
-                phone: process.env.SUPER_ADMIN_PHONE,
-                licenseNumber: process.env.SUPER_ADMIN_LICENSE_NUMBER,
+                name: SUPER_ADMIN_DATA.NAME ,
+                email: SUPER_ADMIN_DATA.EMAIL,
+                password: SUPER_ADMIN_DATA.PASSWORD,
+                phone: SUPER_ADMIN_DATA.PHONE,
+                licenseNumber: SUPER_ADMIN_DATA.LICENSE_NUMBER,
                 profilePicture: randomAvatar,
                 isAccountVerified: true,
-                role: 'owner',
+                role: USER_ROLES.OWNER,
             };
 
             await userService.create(superAdminData);
             console.log("✅ Default Account created.");
         } else {
-            console.log("ℹ️ Default Account already exists.");
+            console.log("✅ Default Account already exists.");
         }
     } catch (error) {
         console.error("❌ Error creating default Account:", error);

@@ -1,4 +1,4 @@
-import BaseService from './BaseService.js';
+import BaseService from './Base/BaseService.js';
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 
@@ -8,7 +8,8 @@ class UserService extends BaseService{
     constructor () {
         super('users', User, {
             createdAtField: 'createdAt',
-            updatedAtField: 'updatedAt'
+            updatedAtField: 'updatedAt',
+            idField: 'id'
         });
     }
 

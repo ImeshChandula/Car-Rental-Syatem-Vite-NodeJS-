@@ -17,8 +17,8 @@ class User {
         this.resetOtp = data.resetOtp;
         this.resetOtpExpiredAt = data.resetOtpExpiredAt;
 
-        this.createdAt = data.createdAt || new Date().toISOString();
-        this.updatedAt = data.updatedAt || new Date().toISOString();
+        this.createdAt = data.createdAt;
+        this.updatedAt = data.updatedAt;
     };
     
 };

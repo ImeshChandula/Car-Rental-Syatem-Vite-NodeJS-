@@ -2,6 +2,7 @@ import Joi from 'joi';
 import imageSchema from './schemas/image.schema.js';
 import phoneSchema from './schemas/phoneNumber.schema.js';
 import dateSchema from './schemas/date.schema.js';
+import USER_ROLES from '../enums/UserRoles.js';
 
 // CREATE VALIDATOR - With defaults
 const validateUser = (req, res, next) => {
@@ -15,7 +16,7 @@ const validateUser = (req, res, next) => {
     password: Joi.string().min(6).max(128).required(),
     phone: phoneSchema.required(),
     licenseNumber: Joi.string().min(3).max(20).required(),
-    role: Joi.string().valid('customer', 'manager', 'owner').default('customer'),
+    role: Joi.string().valid(...Object.values(USER_ROLES)).default(USER_ROLES.CUSTOMER),
     profilePicture: imageSchema.optional(),
     
     googleId: Joi.string().allow('').default(''),
@@ -63,7 +64,7 @@ const validateUserUpdate = (req, res, next) => {
     password: Joi.string().min(6).max(128).optional(),
     phone: phoneSchema.optional(),
     licenseNumber: Joi.string().min(3).max(20).optional(),
-    role: Joi.string().valid('customer', 'manager', 'owner').optional(),
+    role: Joi.string().valid(...Object.values(USER_ROLES)).optional(),
     profilePicture: imageSchema.optional(),
     
     googleId: Joi.string().allow('').optional(),

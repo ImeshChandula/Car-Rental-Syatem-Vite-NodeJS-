@@ -24,9 +24,11 @@
     "firebase-admin": "^13.3.0",
     "firebase-functions": "^6.3.2",
     "google-auth-library": "^9.15.1",
+    "iso-3166-1": "^2.1.1",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "libphonenumber-js": "^1.12.10",
-    "nodemailer": "^7.0.3"
+    "nodemailer": "^7.0.3",
+    "postal-codes-js": "^2.5.2"
   }
 }
