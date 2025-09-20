@@ -1,16 +1,19 @@
 import SUPER_ADMIN_DATA from '../data/SuperAdmin.js';
 import USER_ROLES from '../enums/UserRoles.js';
-import UserService from '../services/userService.js';
+import AdminService from '../services/adminService.js';
 
 
-const userService = new UserService();
+const adminService = new AdminService();
 
 const createDefaultSuperAdmin = async () => {
     try {
         const email = SUPER_ADMIN_DATA.EMAIL;
-        const existingSuperAdmin = await userService.findByEmail(email);
+        const nic = SUPER_ADMIN_DATA.NIC;
+        
+        const adminByEmail  = await adminService.findByEmail(email);
+        const adminByNIC  = await adminService.findByNIC(nic);
 
-        if (!existingSuperAdmin) {
+        if (!adminByEmail || !adminByNIC) {
             const index = Math.floor(Math.random() * 100) + 1;
             const randomAvatar = `https://avatar.iran.liara.run/public/${index}.png`;
 
@@ -20,13 +23,14 @@ const createDefaultSuperAdmin = async () => {
                 email: SUPER_ADMIN_DATA.EMAIL,
                 password: SUPER_ADMIN_DATA.PASSWORD,
                 phone: SUPER_ADMIN_DATA.PHONE,
-                licenseNumber: SUPER_ADMIN_DATA.LICENSE_NUMBER,
+                nic: SUPER_ADMIN_DATA.NIC,
                 profilePicture: randomAvatar,
                 isAccountVerified: true,
+                isAccountAccepted: true,
                 role: USER_ROLES.OWNER,
             };
 
-            await userService.create(superAdminData);
+            await adminService.create(superAdminData);
             console.log("✅ Default Account created.");
         } else {
             console.log("✅ Default Account already exists.");

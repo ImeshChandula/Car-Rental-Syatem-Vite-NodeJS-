@@ -210,7 +210,7 @@ const linkGoogleAccount = async (req, res) => {
     }
 };
 
-    // Unlink Google account (optional)
+// Unlink Google account (optional)
 const unlinkGoogleAccount = async (req, res) => {
     try {
         const userId = req.user.id; // From JWT middleware

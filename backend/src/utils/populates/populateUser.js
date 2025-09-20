@@ -1,31 +1,33 @@
-import UserService from '../services/userService.js';
+import UserService from "../../services/userService.js";
 
 const userService = new UserService();
 
-// Populates the `author` field with full user data
-const populateAuthor = async (data) => {
+const populateDriver = async (data) => {
     const populateOne = async (category) => {
+        // Check for both userId and user_id field names
+        const userIdField = category.hasOwnProperty('user_id') ? 'user_id' : 'id';
+        const userIdValue = category[userIdField];
+        
         // Handle both string ID and object with ID
-        const authorId = typeof category.author === 'string' 
-            ? category.author 
-            : category?.author?.id;
+        const authorId = typeof userIdValue === 'string' 
+            ? userIdValue 
+            : userIdValue?.id;
             
         if (authorId) {
             try {
                 const user = await userService.findById(authorId);
                 if (user) {
-                    category.author = {
+                    category[userIdField] = {
                         id: user.id,
                         email: user.email,
-                        username: user.name,
-                        profilePicture: user.profilePicture,
+                        username: `${user.firstName} ${user.lastName}`
                     };
                 } else {
-                    category.author = null;
+                    category[userIdField] = null;
                 }
             } catch (error) {
                 console.error('Error fetching user:', error);
-                category.author = null;
+                category[userIdField] = null;
             }
         }
         return category;
@@ -38,4 +40,4 @@ const populateAuthor = async (data) => {
     }
 };
 
-export default populateAuthor;
+export default populateDriver;

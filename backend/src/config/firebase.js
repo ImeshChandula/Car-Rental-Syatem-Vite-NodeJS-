@@ -7,6 +7,10 @@ dotenv.config();
 const initializeFirebase = () => {
   try {
     if (admin.apps.length === 0) {
+      if (!process.env.FIREBASE_PRIVATE_KEY) {
+        throw new Error('Firebase private key is missing');
+      }
+      
       admin.initializeApp({
         credential: admin.credential.cert({
           projectId: process.env.FIREBASE_PROJECT_ID,

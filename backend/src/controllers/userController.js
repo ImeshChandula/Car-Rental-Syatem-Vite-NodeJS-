@@ -1,162 +1,83 @@
 import UserService from '../services/userService.js';
-import {uploadImage} from '../utils/uploadMedia.js';
 
 const userService = new UserService();
 
-//@desc     Get all users - Admin only
-const getLoggedUserProfile = async (req, res) => {
+const getUserById = async (req, res) => {
     try {
-        const loggedUser = req.user.id;
+        const user_id = req.params.id;
 
-        const user = await userService.findById(loggedUser);
+        const user = await userService.findById(user_id);
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ success: false, message: "User not found"});
         }
 
-        // remove password
-        user.password = undefined;
+        // Remove password before sending user
+        const { password, ...userWithoutPassword } = user;
 
-        res.status(200).json({message: "User found:", user});
+        return res.status(200).json({ success: true, message: "Admin found: ", data: userWithoutPassword});
     } catch (error) {
-        console.error('Error fetching user profile:', error);
-        res.status(500).json({ message: 'Server error', error: error.message });
+        console.error("Get user by id error: ", error.message);
+        return res.status(500).json({ success: false, message: "Server Error" });
     }
 };
 
-//@desc     Get all users - Admin only
 const getAllUsers = async (req, res) => {
-    try {
-        const users = await userService.findAll();
-    
-        const rolePriority = {
-            'owner': 3,
-            'manager': 2,
-            'customer': 1
-        };
+	try {
+        const { isAccountVerified } = req.query;
 
-        // Sort users by role priority (highest first)
-        const sortedUsers = users.sort((a, b) => {
-            const priorityA = rolePriority[a.role] || 0;
-            const priorityB = rolePriority[b.role] || 0;
+        const filters = {};
+        const filterDescription = [];
+
+        if (isAccountVerified !== undefined) {
+            const isBoolean = isAccountVerified === 'true';
+            filters.isAccountVerified = isBoolean;
+            filterDescription.push(`isAccountVerified: ${isAccountVerified}`);
+        }
         
-            // Sort by priority first (descending)
-            if (priorityB !== priorityA) {
-                return priorityB - priorityA;
-            }
-        
-            // If same priority, sort alphabetically by name (ascending)
-            return (a.name || '').localeCompare(b.name || '');
+        const filteredUsers = Object.keys(filters).length > 0 
+            ? await userService.findWithFilters(filters)
+            : await userService.findAll();
+
+        const sortedUsers = filteredUsers.length > 0
+        ? filteredUsers.sort((a, b) => {
+            return new Date(b.created_at) - new Date(a.created_at);
+            })
+            .map(user => {
+                const { password, ...userWithoutPassword } = user;
+                return userWithoutPassword;
+            })
+        : [];
+
+        return res.status(200).json({ 
+            success: true, 
+            message: "All users fetched successfully", 
+            count: sortedUsers.length, 
+            filtered: filterDescription.length > 0 ? filterDescription.join(', ') : null,
+            data: sortedUsers
         });
-
-        // Remove passwords from response
-        const sanitizedUsers = sortedUsers.map(user => {
-            user.password = undefined;
-            return user;
-        });
-        
-        res.status(200).json({count: sanitizedUsers.length, data: sanitizedUsers});
     } catch (error) {
-        console.error('Get all users error:', error);
-        res.status(500).json({ message: 'Server Error' });
+        console.error("Get all admins error: ", error.message);
+        return res.status(500).json({ success: false, message: "Server Error" });
     }
 };
 
-
-//@desc     Update user by user id
-const updateUserById = async (req, res) => {
-    try {
-        const userIdToUpdate = req.params.id;
-        const currentUserId = req.user.id;
-
-        // Only allow users to update their own profile unless admin
-        if (req.user.role !== 'owner' && currentUserId !== userIdToUpdate) {
-            return res.status(403).json({ message: 'Not authorized to update this user' });
-        }
-        
-        // Don't allow role change unless admin
-        if (req.body.role && req.user.role !== 'owner') {
-            delete req.body.role;
-        }
-        
-        const updatedUser = await userService.updateById(req.params.id, req.body);
-        
-        if (!updatedUser) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        
-        // Remove password from response
-        updatedUser.password = undefined;
-        
-        res.status(201).json({ message: 'User updated successfully', user: updatedUser });
-    } catch (error) {
-        console.error('Update user error:', error);
-        res.status(500).json({ message: 'Server Error' });
-    }
-};
-
-
-//@desc     Update user profile image by user id
-const updateUserProfileImage = async (req, res) => {
-    try {
-        const { profilePicture } = req.body;
-        const userIdToUpdate = req.params.id;
-        const currentUserId = req.user.id;
-
-        if (currentUserId !== userIdToUpdate) {
-            return res.status(403).json({ message: 'Not authorized to update this user' });
-        }
-
-        if (!profilePicture) {
-            return res.status(400).json({message: "Profile picture is required"});
-        }
-
-        // data object
-        const updatedData = { };
-
-        try {
-            const imageUrl = await uploadImage(profilePicture);
-            updatedData.profilePicture = imageUrl;
-        } catch (error) {
-            return res.status(400).json({error: "Failed to upload profile picture", message: error.message});
-        }
-
-        const updatedUser = await userService.updateById(userIdToUpdate, updatedData);
-
-        // remove password
-        updatedUser.password = undefined;
-
-        res.status(200).json({message: "Profile picture updated successfully", updatedUser})
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send({ message: 'Server error' });
-    }
-};
-
-
-//@desc     Delete user by user id - Admin only
 const deleteUserById = async (req, res) => {
     try {
-        const userIdToDelete = req.params.id;
-        const currentUserId = req.user.id; // From auth middleware
-        
-        // Only allow users to update their own profile unless admin
-        if (req.user.role !== 'owner' && currentUserId !== userIdToDelete) {
-            return res.status(403).json({ message: 'Not authorized to delete this user' });
+        const user_id = req.params.id;
+
+        const user = await userService.findById(user_id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found"});
         }
         
-        // Check if user exists before attempting deletion
-        const userToDelete = await userService.findById(userIdToDelete);
-        if (!userToDelete) {
-            return res.status(404).json({success: false, message: 'User not found'});
-        }
-        
-        await userService.deleteById(req.params.id);   
-        res.status(200).json({ message: 'User deleted successfully' });
+        await userService.deleteById(user_id); 
+
+        return res.status(200).json({ success: true, message: "User deleted successfully" });
     } catch (error) {
-        console.error('Delete user error:', error);
-        res.status(500).json({ message: 'Server Error', error: error.message });
+        console.error("Delete Admin error: ", error);
+        return res.status(500).json({ success: false, message: "Server Error"});
     }
 };
 
 
-export {getAllUsers, updateUserById, deleteUserById, getLoggedUserProfile, updateUserProfileImage};
+export { getUserById,getAllUsers, deleteUserById };

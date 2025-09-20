@@ -1,7 +1,7 @@
 
-class User {
+class Admin {
     constructor (id, data) {
-        this.user_id = id;
+        this.admin_id = id;
         this.name = data.name;
         this.email = data.email;
         this.password = data.password;
@@ -10,6 +10,7 @@ class User {
         this.profilePicture = data.profilePicture;
         this.role = data.role;
         this.googleId = data.googleId;
+        this.isAccountAccepted = data.isAccountAccepted;
 
         this.verifyOtp = data.verifyOtp;
         this.verifyOtpExpiredAt = data.verifyOtpExpiredAt;
@@ -23,4 +24,4 @@ class User {
     
 };
 
-export default User;
+export default Admin;

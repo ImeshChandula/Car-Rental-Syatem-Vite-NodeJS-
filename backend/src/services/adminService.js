@@ -1,14 +1,14 @@
 import BaseService from './Base/BaseService.js';
-import User from '../models/Admin.js';
+import Admin from '../models/Admin.js';
 import bcrypt from 'bcryptjs';
 
 
-class UserService extends BaseService{
+class AdminService extends BaseService{
     constructor () {
-        super('user', User, {
+        super('admin', Admin, {
             createdAtField: 'created_at',
             updatedAtField: 'updated_at',
-            idField: 'user_id'
+            idField: 'admin_id'
         });
     }
 
@@ -60,4 +60,4 @@ class UserService extends BaseService{
 
 };
 
-export default UserService;
+export default AdminService;

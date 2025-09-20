@@ -1,5 +1,5 @@
-import validateAndProcessMedia from '../utils/validateMedia.js';
-import { uploadMedia } from '../utils/uploadMedia.js';
+import validateAndProcessMedia from '../utils/storage/cloudinary/validateMedia.js';
+import { uploadMedia } from '../utils/storage/cloudinary/uploadMedia.js';
 
 async function handleMediaUpload(mediaInput, mediaType = 'image') {
     try {
