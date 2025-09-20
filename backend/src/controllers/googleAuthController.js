@@ -94,7 +94,7 @@ const googleAuth = async (req, res) => {
                 email,
                 password: '', // No password needed for Google auth
                 phone: '', // Will be updated later if needed
-                licenseNumber: '', // Will be updated later if needed
+                nic: '', // Will be updated later if needed
                 profilePicture: picture || randomAvatar,
                 isAccountVerified: true, // Google accounts are pre-verified
             };
