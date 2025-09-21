@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
+import { clearCookiesForAllDomains } from "../config/domainConfig";
 import toast from "react-hot-toast";
 
 
@@ -8,19 +9,23 @@ export const useAuthStore = create((set) => ({
     isSigningUp: false,
     isLoggingIn: false,
     isGoogleLoading: false,
-
     isCheckingAuth: true,
 
     checkAuth: async () =>{
         try {
+            set({ isCheckingAuth: true });
+
+            console.log("Starting checkAuth...");
             const res = await axiosInstance.get("/auth/checkAuth");
 
-            if (res.data.success && res.data.data) {
+            if (res.data && res.data.success) {
                 set({ authUser: res.data.data });
                 console.log("Auth user set:", res.data.data);
+                return res.data.data;
             } else {
+                console.log("CheckAuth failed:", res.data);
                 set({ authUser: null });
-                if (res.data.message) {
+                if (res.data?.message) {
                     toast.error(res.data.message);
                 }
             }
@@ -32,6 +37,16 @@ export const useAuthStore = create((set) => ({
             }
         } finally {
             set({ isCheckingAuth: false });
+        }
+    },
+
+    isAuthenticated: async () => {
+        try {
+            const res = await axiosInstance.get("/auth/checkAuth");
+            return res.data && res.data.success;
+        // eslint-disable-next-line no-unused-vars
+        } catch (error) {
+            return false;
         }
     },
 
@@ -67,6 +82,7 @@ export const useAuthStore = create((set) => ({
             
             if (res.data.success && res.data.data) {
                 toast.success(res.data?.message || "Registration Successful.");
+                return {user: res.data.data};
             } else {
                 const errorMessage = "Registration failed: Invalid server response";
                 if (res.data.message) {
@@ -88,12 +104,15 @@ export const useAuthStore = create((set) => ({
     login: async (data) => {
         set({ isLoggingIn: true });
         try {
+            console.log("Attempting login...");
             const res = await axiosInstance.post("/auth/login", data);
+
             if (res.data.success && res.data.data) {
                 set({ authUser: res.data.data });
                 toast.success(res.data?.message || "Logged in successfully");
                 return res.data.data;
             } else {
+                console.log("Login response not successful:", res.data);
                 set({ authUser: null });
                 if (res.data.message) {
                     toast.error(res.data.message);
@@ -102,6 +121,7 @@ export const useAuthStore = create((set) => ({
         } catch (error) {
             console.error("Login error:", error);
             toast.error(error.response?.data?.message || error.message);
+            set({ authUser: null });
             throw error;
         } finally {
             set({ isLoggingIn: false });
@@ -140,10 +160,21 @@ export const useAuthStore = create((set) => ({
 
     logout: async () => {
         try {
-            await axiosInstance.post("/auth/logout");
-            set({ authUser: null });
+            const response = await axiosInstance.post("/auth/logout");
+            
+            if (response.data && response.data.success) {
+                clearCookiesForAllDomains('jwt');
 
-            toast.success("Logged out Successfully");
+                localStorage.removeItem('jwt');
+                localStorage.removeItem('authToken');
+                sessionStorage.removeItem('jwt');
+                sessionStorage.removeItem('authToken');
+
+                set({ authUser: null });
+                toast.success("Logged out Successfully");
+            } else {
+                toast.error(response.data.message);
+            }
         } catch (error) {
             toast.error(error.response.data.message);
         }

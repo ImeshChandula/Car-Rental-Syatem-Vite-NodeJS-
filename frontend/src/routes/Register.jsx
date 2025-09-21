@@ -15,10 +15,10 @@ const Register = () => {
     email: "",
     password: "",
     phone: "",
-    licenseNumber: "",
+    nic: "",
   });
 
-  const { signup, isSigningUp } = useAuthStore();
+  const { signupUser, isSigningUp } = useAuthStore();
 
   const validateForm = () => {
     if (!formData.name) {
@@ -45,8 +45,8 @@ const Register = () => {
       toast.error("Phone number is required");
       return false;
     }
-    if (!formData.licenseNumber) {
-      toast.error("License number is required");
+    if (!formData.nic) {
+      toast.error("NIC is required");
       return false;
     }
     return true;
@@ -63,10 +63,9 @@ const Register = () => {
     if (!isValid) return;
     
     try {
-      const result = await signup(formData);
+      const result = await signupUser(formData);
       if (result && result.user) {
         setMessage("New account created successfully.");
-        toast.success(result.message);
         navigate('/email/verify');
       }
     } catch (error) {
@@ -167,14 +166,14 @@ const Register = () => {
           </div>
 
           <div className='form-field'>
-            <label className='form-label'>License Number</label>
+            <label className='form-label'>NIC Number</label>
             <div className='input-group'>
               <IdCard className='icon'/> 
               <input
                 type="text"
-                name="licenseNumber"
-                placeholder="B22222222"
-                value={formData.licenseNumber}
+                name="nic"
+                placeholder="200014557768"
+                value={formData.nic}
                 onChange={handleChange}
                 required
                 className='form-input'

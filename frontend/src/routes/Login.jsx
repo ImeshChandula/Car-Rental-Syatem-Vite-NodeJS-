@@ -37,9 +37,8 @@ const Login = () => {
       };
       
       const result = await login(loginData);
-      if (result && result.user){
+      if (result && result.success){
         setMessage("User logged successfully.");
-        toast.success(result.message);
       }
       // We'll let the toast in the auth store handle success messages
     } catch (error) {

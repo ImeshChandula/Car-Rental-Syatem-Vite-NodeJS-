@@ -139,7 +139,7 @@ const login = async (req, res) => {
             isAccountVerified: account.isAccountVerified,
         };
 
-        generateToken(payload, res); 
+        const token = generateToken(payload, res); 
 
         const { password: accountPassword, ...adminWithoutPassword } = account;
 

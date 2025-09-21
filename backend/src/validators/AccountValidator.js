@@ -3,6 +3,7 @@ import phoneSchema from './schemas/phoneNumber.schema.js';
 import dateSchema from './schemas/date.schema.js';
 import USER_ROLES from '../enums/UserRoles.js';
 import nicSchema from './schemas/nic.schema.js';
+import imageSchema from './schemas/image.cloudinary.schema.js';
 
 // CREATE VALIDATOR - With defaults
 const validateAccount = (req, res, next) => {

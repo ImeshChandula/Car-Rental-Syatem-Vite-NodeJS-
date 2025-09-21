@@ -32,21 +32,26 @@ const getLoggedProfile = async (req, res) => {
 const updateLoggedProfile = async (req, res) => {
     try {
         const loggedUser_id = req.user.id;
+        const account_id = req.params.id;
+
+        if (account_id !== loggedUser_id) {
+            return res.status(403).json({success: false, message: "Access forbidden"});
+        }
 
         const user = await userService.findById(loggedUser_id);
         const admin = await adminService.findById(loggedUser_id);
 
         const loggedUser = user ?? admin;
-        const isCustomer = loggedUser.role === USER_ROLES.CUSTOMER;
 
         if (!loggedUser) {
-            return res.status(404).json({success: false, message: "Account not found:",});
+            return res.status(404).json({success: false, message: "Account not found"});
         }
 
         const updateData = { ...req.body };
 
         let updatedUser = null;
-        if (!isCustomer) {
+        const isAdmin = [USER_ROLES.OWNER, USER_ROLES.MANAGER].includes(loggedUser.role);
+        if (isAdmin) {
             updatedUser = await adminService.updateById(loggedUser_id, updateData);
             if (!updatedUser) {
                 return res.status(404).json({ success: false, message: "Failed to update account" });
@@ -69,17 +74,21 @@ const updateLoggedProfile = async (req, res) => {
 
 const updateLoggedProfileImage = async (req, res) => {
     try {
+        const account_id = req.params.id;
         const loggedUser_id = req.user.id;
         const { profilePicture } = req.body;
+
+        if (account_id !== loggedUser_id) {
+            return res.status(403).json({success: false, message: "Access forbidden"});
+        }
 
         const user = await userService.findById(loggedUser_id);
         const admin = await adminService.findById(loggedUser_id);
 
         const loggedUser = user ?? admin;
-        const isCustomer = loggedUser.role === USER_ROLES.CUSTOMER;
 
         if (!loggedUser) {
-            return res.status(404).json({success: false, message: "Account not found:",});
+            return res.status(404).json({success: false, message: "Account not found"});
         }
 
         const updateData = { };
@@ -92,7 +101,8 @@ const updateLoggedProfileImage = async (req, res) => {
         }
 
         let updatedUser = null;
-        if (!isCustomer) {
+        const isAdmin = [USER_ROLES.OWNER, USER_ROLES.MANAGER].includes(loggedUser.role);
+        if (isAdmin) {
             updatedUser = await adminService.updateById(loggedUser_id, updateData);
             if (!updatedUser) {
                 return res.status(404).json({ success: false, message: "Failed to update account" });
@@ -106,11 +116,54 @@ const updateLoggedProfileImage = async (req, res) => {
 
         const { password, ...accountWithoutPassword } = updatedUser;
 
-        return res.status(200).json({ success: true, message: "Profile picture updated successfully", data: accountWithoutPassword})
+        return res.status(200).json({ success: true, message: "Profile picture updated successfully", data: accountWithoutPassword});
     } catch (error) {
         console.error("Update account error:", error.message);
         return res.status(500).send({ success: false, message: "Server Error" });
     }
 };
 
-export { getLoggedProfile, updateLoggedProfile, updateLoggedProfileImage};
+const unVerifyAccount = async (req, res) => {
+	try {
+        const account_id = req.params.id;
+        const loggedUser_id = req.user.id;
+
+        if (account_id !== loggedUser_id) {
+            return res.status(403).json({success: false, message: "Access forbidden"});
+        }
+
+        const user = await userService.findById(loggedUser_id);
+        const admin = await adminService.findById(loggedUser_id);
+
+        const loggedUser = user ?? admin;
+
+        if (!loggedUser) {
+            return res.status(404).json({success: false, message: "Account not found"});
+        }
+
+        const updateData = { isAccountVerified: false };
+
+        let updatedUser = null;
+        const isAdmin = [USER_ROLES.OWNER, USER_ROLES.MANAGER].includes(loggedUser.role);
+        if (isAdmin) {
+            updatedUser = await adminService.updateById(loggedUser_id, updateData);
+            if (!updatedUser) {
+                return res.status(404).json({ success: false, message: "Failed to un-verify account" });
+            }
+        } else {
+            updatedUser = await userService.updateById(loggedUser_id, updateData);
+            if (!updatedUser) {
+                return res.status(404).json({ success: false, message: "Failed to un-verify account" });
+            }
+        }
+
+        const { password, ...accountWithoutPassword } = updatedUser;
+
+        return res.status(200).json({ success: true, message: "Account deleted successfully", data: accountWithoutPassword});
+    } catch (error) {
+        console.error("Method_name error:", error.message);
+        return res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
+
+export { getLoggedProfile, updateLoggedProfile, updateLoggedProfileImage, unVerifyAccount };

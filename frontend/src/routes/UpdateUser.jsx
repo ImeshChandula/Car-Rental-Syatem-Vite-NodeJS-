@@ -12,24 +12,28 @@ const UpdateUser = () => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    licenseNumber: ''
+    nic: ''
   });
 
   // Fetch current user profile
   const fetchUserProfile = async () => {
     try {
-      const response = await axiosInstance.get("users/getLoggedUserProfile");
-      const userData = response.data.user;
+      const response = await axiosInstance.get("/myProfile/get");
       
-      setUser(userData);
-      setFormData({
-        name: userData.name || '',
-        phone: userData.phone || '',
-        licenseNumber: userData.licenseNumber || ''
-      });
+      if (response.data.success && response.data.data) {
+        const userData = response.data.data;
+        setUser(userData);
+        setFormData({
+          name: userData.name || '',
+          phone: userData.phone || '',
+          licenseNumber: userData.licenseNumber || ''
+        });
+      } else {
+        toast.error(response.data.message);
+      }
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      toast.error("Failed to load profile information");
+      toast.error(error.response?.data?.message ||"Failed to load profile information");
       // Navigate back to settings if can't fetch data
       navigate('/settings');
     } finally {
@@ -74,17 +78,18 @@ const UpdateUser = () => {
     try {
       setUpdating(true);
       
-      // Send update request
-      // eslint-disable-next-line no-unused-vars
-      const response = await axiosInstance.patch(`/users/updateUserById/${user.id}`, formData);
+      const response = await axiosInstance.patch(`/myProfile/update/account/${user.id}`, formData);
       
-      toast.success("Profile updated successfully!");
-      
-      // Navigate back to settings after 5 seconds
-      toast.success("Redirecting to settings in 5 seconds...");
-      setTimeout(() => {
-        navigate('/settings');
-      }, 5000);
+      if (response.data && response.data.success) {
+        toast.success(response.data.message || "Profile updated successfully!");
+        toast.success("Redirecting to settings in 5 seconds...");
+        
+        setTimeout(() => {
+          navigate('/settings');
+        }, 5000);
+      } else {
+        toast.error(response.data.message);
+      }
       
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -178,17 +183,17 @@ const UpdateUser = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="licenseNumber" className="form-label">
-              License Number
+            <label htmlFor="nic" className="form-label">
+              NIC Number
             </label>
             <input
               type="text"
-              id="licenseNumber"
-              name="licenseNumber"
-              value={formData.licenseNumber}
+              id="nic"
+              name="nic"
+              value={formData.nic}
               onChange={handleInputChange}
               className="form-input"
-              placeholder="Enter your license number"
+              placeholder="Enter your NIC number"
             />
           </div>
 

@@ -1,7 +1,7 @@
 import express from 'express';
 import USER_ROLES from '../enums/UserRoles.js';
 import { authenticateUser, authorizeRoles } from "../middleware/authMiddleware.js";
-import { getLoggedProfile, updateLoggedProfile, updateLoggedProfileImage } from '../controllers/commonUserController.js';
+import { getLoggedProfile, unVerifyAccount, updateLoggedProfile, updateLoggedProfileImage } from '../controllers/commonUserController.js';
 import { validateAccountUpdate } from '../validators/AccountValidator.js';
 
 const router = express.Router();
@@ -14,5 +14,6 @@ const manager = USER_ROLES.MANAGER;
 router.get("/get", authenticateUser, getLoggedProfile);
 router.patch("/update/account/:id", validateAccountUpdate, authenticateUser, updateLoggedProfile);
 router.patch("/update/profileImage/:id", validateAccountUpdate, authenticateUser, updateLoggedProfileImage);
+router.patch("/update/un-verify/:id", authenticateUser, unVerifyAccount);
 
 export default router;

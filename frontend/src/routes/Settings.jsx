@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import avatar from "../assets/avatar.jpg";
 import toast from 'react-hot-toast';
 import '../styles/Settings.css';
+import { USER_ROLES } from '../enums/UserRoles';
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -15,12 +16,17 @@ const Settings = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await axiosInstance.get("users/getLoggedUserProfile");
+      setLoading(true);
+      const response = await axiosInstance.get("/myProfile/get");
 
-      setUser(response.data.user);
+      if (response.data.success && response.data.data) {
+        setUser(response.data.data);
+      } else {
+        toast.error(response.data.message || "Failed to fetch profile");
+      }
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      toast.error("Failed to load profile information");
+      toast.error(error.response?.data?.message || "Failed to load profile information");
     } finally {
       setLoading(false);
     }
@@ -68,6 +74,9 @@ const Settings = () => {
     });
   };*/
 
+  const isAdmin = [USER_ROLES.OWNER, USER_ROLES.MANAGER].includes(user.role);
+  const user_id = isAdmin ? user.admin_id : user.user_id;
+
   // Handle image upload
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
@@ -92,31 +101,27 @@ const Settings = () => {
       const base64Image = await convertToBase64(file);
       //const base64Image = await compressImage(file);
 
-      const response = await axiosInstance.patch(`/users/updateUserProfileImage/${user.id}`, {
+      const response = await axiosInstance.patch(`/myProfile/update/profileImage/${user.id}`, {
         profilePicture: base64Image
       });
 
-      console.log('Upload response:', response.data);
+      console.log('Upload response:', response.data.success);
 
       // Update user state with new profile picture
-      if (response.data && response.data.updatedUser) {
+      if (response.data.success && response.data.data) {
         setUser(prevUser => ({
           ...prevUser,
-          profilePicture: response.data.updatedUser.profilePicture || base64Image
+          profilePicture: response.data.data.profilePicture || base64Image
         }));
+
+        toast.success(response.data.message);
       } else {
         console.error('Unexpected response structure:', response.data);
-        // Fallback: just use the base64 image
-        setUser(prevUser => ({
-          ...prevUser,
-          profilePicture: base64Image
-        }));
+        toast.error(response.data.message);
       }
-
-      toast.success('Profile picture updated successfully!');
     } catch (error) {
       console.error('Error uploading image:', error);
-      toast.error('Failed to update profile picture. Please try again.');
+      toast.error(error.response?.data?.error || 'Failed to update profile picture. Please try again.');
     } finally {
       setUploadingImage(false);
       // Clear the input
@@ -132,12 +137,16 @@ const Settings = () => {
     }
 
     try {
-      await axiosInstance.delete(`/users/deleteUserById/${user.id}`);
-      toast.success("Account deleted successfully");
-      logout();
+      const response = await axiosInstance.delete(`/myProfile/update/un-verify/${user_id}`);
+      if (response.data.success) {
+        toast.success(response.data.message || "Account deleted successfully");
+        logout();
+      } else {
+        toast.error(response.data.message);
+      }
     } catch (error) {
       console.error('Error deleting user:', error);
-      toast.error("Failed to delete account. Please try again.");
+      toast.error(error.response?.data?.message || "Failed to delete account. Please try again.");
     }
   };
 
@@ -208,8 +217,8 @@ const Settings = () => {
           <div className="detail-row">
             <div className="detail-icon">🪪</div>
             <div className="detail-info">
-              <span className="detail-label">License Number</span>
-              <span className="detail-value">{user.licenseNumber}</span>
+              <span className="detail-label">NIC Number</span>
+              <span className="detail-value">{user.nic}</span>
             </div>
           </div>
           <div className="detail-row">
