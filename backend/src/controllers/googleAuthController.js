@@ -73,14 +73,15 @@ const googleAuth = async (req, res) => {
                 role: user.role,
                 isAccountVerified: user.isAccountVerified,
             };
+            
             generateToken(payload, res);
 
-            user.password = undefined;
+            const { password, ...accountWithoutPassword } = user;
 
             return res.status(200).json({
                 success: true,
                 message: 'Login successful',
-                user
+                data: accountWithoutPassword
             });
         } else {
             // User doesn't exist - this is a registration
@@ -109,14 +110,15 @@ const googleAuth = async (req, res) => {
                 role: user.role,
                 isAccountVerified: user.isAccountVerified,
             };
+
             generateToken(payload, res);
 
-            user.password = undefined;
+            const { password, ...accountWithoutPassword } = user;
 
             return res.status(200).json({
                 success: true,
                 message: 'Registration successful',
-                user
+                data: accountWithoutPassword
             });
         }
     } catch (error) {
@@ -193,12 +195,12 @@ const linkGoogleAccount = async (req, res) => {
 
         const updatedUser = await userService.updateById(userId, updateData);
 
-        updatedUser.password = undefined;
+        const { password, ...accountWithoutPassword } = updatedUser;
         
         return res.status(200).json({
             success: true,
             message: 'Google account linked successfully',
-            updatedUser
+            data: accountWithoutPassword
         });
 
     } catch (error) {
@@ -243,12 +245,12 @@ const unlinkGoogleAccount = async (req, res) => {
             googleId: ''
         });
 
-        updatedUser.password = undefined;
+        const { password, ...accountWithoutPassword } = updatedUser;
 
         return res.status(200).json({
             success: true,
             message: 'Google account unlinked successfully',
-            updatedUser
+            data: accountWithoutPassword
         });
 
     } catch (error) {

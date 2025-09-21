@@ -4,7 +4,7 @@ import { authenticateUser } from '../middleware/authMiddleware.js'; // Your JWT 
 
 const router = express.Router();
 
-// http://localhost:5000/google
+// http://localhost:5000/api/google
 
 // Google authentication (register/login)
 router.post('/auth', googleAuth);

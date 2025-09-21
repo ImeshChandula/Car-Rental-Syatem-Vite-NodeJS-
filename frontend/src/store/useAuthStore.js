@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 
+
 export const useAuthStore = create((set) => ({
     authUser: null,
     isSigningUp: false,
@@ -14,50 +15,64 @@ export const useAuthStore = create((set) => ({
         try {
             const res = await axiosInstance.get("/auth/checkAuth");
 
-            if (res.data && res.status === 200) {
-                // Only set authUser if the account is verified
-                if (res.data.isAccountVerified) {
-                    set({ authUser: res.data });
-                    console.log("Auth user set:", res.data);
-                } else {
-                    set({ authUser: null });
-                    console.log("Gmail Account not verified, auth not set");
-                    toast.error("Please verify your gmail account to continue");
-                }
+            if (res.data.success && res.data.data) {
+                set({ authUser: res.data.data });
+                console.log("Auth user set:", res.data.data);
             } else {
                 set({ authUser: null });
+                if (res.data.message) {
+                    toast.error(res.data.message);
+                }
             }
         } catch (error) {
             console.log("Error in checkAuth: ", error);
             set({ authUser: null });
+            if (error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            }
         } finally {
             set({ isCheckingAuth: false });
         }
     },
 
-    signup: async (data) => {
+    signupAdmin: async (data) => {
         set({ isSigningUp: true });
         try {
-            const res = await axiosInstance.post("/auth/register", data);
+            const res = await axiosInstance.post("/auth/register/admin", data);
             
-            // Check if the response contains user data and has a success status
-            if (res.data && res.data.user && res.status >= 200 && res.status < 300) {
-                // Only set authUser if the account is verified
-                if (res.data.isAccountVerified) {
-                    set({ authUser: res.data });
-                    console.log("Auth user set:", res.data);
-                    return {user: res.data, isVerified: true };
-                } else {
-                    set({ authUser: null });
-                    console.log("Gmail Account not verified, auth not set");
-                    toast.error("Please verify your gmail account to continue");
-                    return { user: res.data, isVerified: false };
-                }
+            if (res.data.success && res.data.data) {
+                toast.success(res.data?.message || "Registration Successful.");
             } else {
-                // If response doesn't contain expected data
                 const errorMessage = "Registration failed: Invalid server response";
-                toast.error(errorMessage);
-                throw new Error(errorMessage);
+                if (res.data.message) {
+                    toast.error(res.data.message);
+                }
+                throw new Error(res.data.message || errorMessage);
+            }
+        } catch (error) {
+            // Handle API errors with proper error message
+            const errorMessage = error.response?.data?.message || 
+                               "Failed to create account. Please try again.";
+            toast.error(errorMessage);
+            throw error;
+        } finally {
+            set({ isSigningUp: false })
+        }
+    },
+
+    signupUser: async (data) => {
+        set({ isSigningUp: true });
+        try {
+            const res = await axiosInstance.post("/auth/register/user", data);
+            
+            if (res.data.success && res.data.data) {
+                toast.success(res.data?.message || "Registration Successful.");
+            } else {
+                const errorMessage = "Registration failed: Invalid server response";
+                if (res.data.message) {
+                    toast.error(res.data.message);
+                }
+                throw new Error(res.data.message || errorMessage);
             }
         } catch (error) {
             // Handle API errors with proper error message
@@ -73,22 +88,16 @@ export const useAuthStore = create((set) => ({
     login: async (data) => {
         set({ isLoggingIn: true });
         try {
-            if (!data.email || !data.password) {
-                throw new Error("Email and password are required");
-            }
-
-            const cleanedData = {
-                email: data.email.trim().toLowerCase(),
-                password: data.password
-            };
-
-            const res = await axiosInstance.post("/auth/login", cleanedData);
-            if (res.data && res.data.user) {
-                set({ authUser: res.data.user });
-                toast.success("Logged in successfully");
-                return res.data;
+            const res = await axiosInstance.post("/auth/login", data);
+            if (res.data.success && res.data.data) {
+                set({ authUser: res.data.data });
+                toast.success(res.data?.message || "Logged in successfully");
+                return res.data.data;
             } else {
-                throw new Error("Invalid response from server");
+                set({ authUser: null });
+                if (res.data.message) {
+                    toast.error(res.data.message);
+                }
             }
         } catch (error) {
             console.error("Login error:", error);
@@ -108,12 +117,15 @@ export const useAuthStore = create((set) => ({
 
             const res = await axiosInstance.post("/google/auth", { token });
             
-            if (res.data && res.data.success) {
-                set({ authUser: res.data.user });
+            if (res.data.success && res.data.data) {
+                set({ authUser: res.data.data });
                 toast.success(res.data.message || "Logged in with Google successfully");
-                return res.data;
+                return res.data.data;
             } else {
-                throw new Error("Invalid response from server");
+                set({ authUser: null });
+                if (res.data.message) {
+                    toast.error(res.data.message);
+                }
             }
         } catch (error) {
             console.error("Google login error:", error);

@@ -1,10 +1,20 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+// Verify environment variables are loaded
+console.log('🔍 Environment variables loaded:');
+console.log('- NODE_ENV:', process.env.NODE_ENV);
+console.log('- PORT:', process.env.PORT);
+console.log('- FIREBASE_PROJECT_ID:', process.env.FIREBASE_PROJECT_ID);
+console.log('- FIREBASE_CLIENT_EMAIL:', process.env.FIREBASE_CLIENT_EMAIL);
+console.log('- FIREBASE_PRIVATE_KEY exists:', !!process.env.FIREBASE_PRIVATE_KEY);
+console.log('- FIREBASE_PRIVATE_KEY length:', process.env.FIREBASE_PRIVATE_KEY?.length);
+console.log('- FIREBASE_STORAGE_BUCKET:', process.env.FIREBASE_STORAGE_BUCKET);
+
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import  initializeFirebase from "./src/config/firebase.js";
+import initializeFirebase from "./src/config/firebase.js";
 import { initializeDefaultSuperAdmin } from "./src/initializations/defaultSuperAccount.js";
 
 import authRoutes from "./src/routes/authRoutes.js";

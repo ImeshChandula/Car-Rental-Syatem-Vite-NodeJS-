@@ -43,7 +43,7 @@ const registerAdmin = async (req, res) => {
 
         return res.status(201).json({ 
             success: true,
-            message: "User registered successfully", 
+            message: "Admin registered successfully", 
             data: adminWithoutPassword 
         });
     } catch (error) {

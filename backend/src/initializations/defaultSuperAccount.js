@@ -44,7 +44,7 @@ const createDefaultSuperAdmin = async () => {
 const initializeDefaultSuperAdmin = async () => {
     try {
         await createDefaultSuperAdmin();
-        console.log("✅ Default Account initialization completeD...");
+        console.log("✅ Default Account initialization completed...");
     } catch (err) {
         console.error("❌ Failed to initialize Default Account:", err.message);
     }
