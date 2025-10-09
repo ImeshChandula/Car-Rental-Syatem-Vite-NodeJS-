@@ -9,6 +9,7 @@ import passport from "passport";
 import initializeFirebase from "./src/config/firebase.js";
 import { initializeDefaultSuperAdmin } from "./src/initializations/defaultSuperAccount.js";
 import { validateEnvironment } from "./src/config/env.js";
+import "./src/config/passport.js";
 
 import authRoutes from "./src/routes/authRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
@@ -48,13 +49,23 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cookieParser());
 
-/* session cookies
+/*// session cookies
+const isDevelopment = process.env.NODE_ENV === 'development';
+const cookieDomain = process.env.PRODUCTION_COOKIE_DOMAIN;
 app.use(session({
   secret: process.env.SESSION_SECRET || "secret",
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 1000*60*60, // 1 hour
+    maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
+    // prevent XSS attacks cross-site scripting attacks
+    httpOnly: true,  
+    // CSRF attacks cross-site request forgery attacks
+    // Allow cross-origin in production
+    sameSite: isDevelopment ? "strict" : "none", 
+    secure: !isDevelopment,
+    domain: isDevelopment ? undefined : cookieDomain,
+    path: '/'
   }
 }));
 app.use(passport.initialize());

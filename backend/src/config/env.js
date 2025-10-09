@@ -5,6 +5,7 @@ const validateEnvironment = () => {
         'FIREBASE_CLIENT_EMAIL',
         'FIREBASE_PRIVATE_KEY',
         'FIREBASE_STORAGE_BUCKET',
+        //'SESSION_SECRET',
     ];
 
     const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);

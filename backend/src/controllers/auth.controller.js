@@ -1,8 +1,8 @@
 import AdminService from '../services/adminService.js';
 import UserService from '../services/userService.js';
 import sendWelcomeEmail from '../utils/sendWelcomeEmail.js';
-import { generateToken, removeToken } from '../utils/jwtTokenManager.js';
 import USER_ROLES from '../enums/UserRoles.js';
+import { generateToken, removeToken } from '../utils/jwtTokenManager.js';
 
 const userService = new UserService();
 const adminService = new AdminService();
@@ -150,6 +150,24 @@ const login = async (req, res) => {
     }
 };
 
+const passportLogin = async (req, res) => {
+    try {
+           const user = req.user;
+           
+           const { password, ...userWithoutPassword } = user;
+           return res.status(200).json({ 
+               success: true, 
+               message: "Login successful", 
+               data: userWithoutPassword 
+           });
+       } catch (error) {
+           return res.status(500).json({ 
+               success: false, 
+               message: "Login failed" 
+           });
+       }
+};
+
 const logout = async (req, res) => {
     try {
         removeToken(res);
@@ -203,4 +221,4 @@ const checkAuth = async (req, res) => {
 };
 
 
-export { registerAdmin, registerUser, login, logout, checkAuth };
+export { registerAdmin, registerUser, login, passportLogin, logout, checkAuth };
