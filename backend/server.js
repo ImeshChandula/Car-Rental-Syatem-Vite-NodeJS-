@@ -1,21 +1,14 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-// Verify environment variables are loaded
-console.log('🔍 Environment variables loaded:');
-console.log('- NODE_ENV:', process.env.NODE_ENV);
-console.log('- PORT:', process.env.PORT);
-console.log('- FIREBASE_PROJECT_ID:', process.env.FIREBASE_PROJECT_ID);
-console.log('- FIREBASE_CLIENT_EMAIL:', process.env.FIREBASE_CLIENT_EMAIL);
-console.log('- FIREBASE_PRIVATE_KEY exists:', !!process.env.FIREBASE_PRIVATE_KEY);
-console.log('- FIREBASE_PRIVATE_KEY length:', process.env.FIREBASE_PRIVATE_KEY?.length);
-console.log('- FIREBASE_STORAGE_BUCKET:', process.env.FIREBASE_STORAGE_BUCKET);
-
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import session from "express-session";
+import passport from "passport";
 import initializeFirebase from "./src/config/firebase.js";
 import { initializeDefaultSuperAdmin } from "./src/initializations/defaultSuperAccount.js";
+import { validateEnvironment } from "./src/config/env.js";
 
 import authRoutes from "./src/routes/authRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
@@ -23,6 +16,10 @@ import passwordRoutes from "./src/routes/passwordRoutes.js";
 import myProfileRoutes from "./src/routes/commonUserRoutes.js";
 import googleAuthRoutes from "./src/routes/googleAuthRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
+
+
+// validate environment
+validateEnvironment();
 
 // connect to firebase
 initializeFirebase();
@@ -38,16 +35,31 @@ const initializeDefaults = async () => {
 
 initializeDefaults();
 
+const app = express();
+
+// Middleware
 const allowedOrigins = [
   process.env.PRODUCTION_WEB_URL,
   process.env.DEVELOPMENT_WEB_URL
 ].filter(Boolean);
 
-const app = express();
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cookieParser());
+
+/* session cookies
+app.use(session({
+  secret: process.env.SESSION_SECRET || "secret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000*60*60, // 1 hour
+  }
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+*/
 
 //Routes
 app.use("/api/auth", authRoutes);
@@ -59,7 +71,7 @@ app.use("/api/user", userRoutes);
 
 //  Route handler for the root path
 app.get('/', (req, res) => {
-  res.send('Its Working...!');
+  res.send('✅ Server is running...!');
 });
 
 // Error handling middleware
