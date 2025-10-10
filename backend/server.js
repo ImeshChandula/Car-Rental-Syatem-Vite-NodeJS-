@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
 import initializeFirebase from "./src/config/firebase.js";
+import errorHandling from "./src/middleware/errorHandler.js";
 import { initializeDefaultSuperAdmin } from "./src/initializations/defaultSuperAccount.js";
 import { validateEnvironment } from "./src/config/env.js";
 import "./src/config/passport.js";
@@ -17,6 +18,7 @@ import passwordRoutes from "./src/routes/passwordRoutes.js";
 import myProfileRoutes from "./src/routes/commonUserRoutes.js";
 import googleAuthRoutes from "./src/routes/googleAuthRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
+
 
 
 // validate environment
@@ -86,10 +88,7 @@ app.get('/', (req, res) => {
 });
 
 // Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Server error', error: process.env.NODE_ENV === 'development' ? err.message : {} });
-});
+app.use(errorHandling);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
