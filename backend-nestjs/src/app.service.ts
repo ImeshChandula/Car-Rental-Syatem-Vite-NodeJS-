@@ -6,7 +6,7 @@ export class AppService {
   constructor(private configService: ConfigService) {}
 
   getHello(): string {
-    const port = this.configService.get<string>('PORT', 'defaultValue');
+    const port = this.configService.get<string>('port');
     console.log('Server running on port ', port);
 
     return 'Server is running...!';

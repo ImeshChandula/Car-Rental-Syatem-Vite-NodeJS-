@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class UpdateCarDTO {
     @IsOptional()
@@ -9,9 +9,17 @@ export class UpdateCarDTO {
     title?: string;
 
     @IsOptional()
-    @IsNotEmpty({ message: 'content is required' })
-    @IsString({ message: 'content must be string' })
-    @MinLength(3, { message: 'content must be at least 3 characters long' })
-    @MaxLength(250, { message: 'content can not be longer than 250 characters' })
+    @IsNotEmpty({ message: 'Description is required' })
+    @IsString({ message: 'Description must be string' })
+    @MinLength(3, { message: 'Description must be at least 3 characters long' })
+    @MaxLength(250, { message: 'Description can not be longer than 250 characters' })
     description?: string;
+
+    @IsOptional()
+    @IsBoolean()
+    is_booked?: boolean;
+
+    @IsOptional()
+    @IsBoolean()
+    is_available?: boolean;
 }

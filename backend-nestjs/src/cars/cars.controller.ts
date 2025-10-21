@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CarsService } from './cars.service';
-import type { Car as CarInterface } from './interfaces/car.interface';
 import { CreateCarDTO } from './dto/create-car.dto';
 import { CarExistsPipe } from './pipes/car-exists.pipe';
 import { UpdateCarDTO } from './dto/update-car.dto';
+import { Car as CarEntity } from './entities/car.entity';
 
 // http://localhost:5000/cars
 
@@ -13,22 +13,14 @@ export class CarsController {
 
   @Get('')
   @HttpCode(HttpStatus.OK)
-  findAll(@Query('search') search?: string): CarInterface[] {
-    const allCars = this.carsService.findAll();
-
-    if (search) {
-      return allCars.filter((singleCar) =>
-        singleCar.title.toLowerCase().includes(search.toLowerCase()),
-      );
-    }
-
-    return allCars;
+  async findAll(@Query('search') search?: string): Promise<CarEntity[]> {
+    return this.carsService.findAll(search);
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id', ParseIntPipe, CarExistsPipe) id: number): CarInterface{
-    return this.carsService.findById(id);
+  async findOne(@Param('id', ParseIntPipe, CarExistsPipe) id: number): Promise<CarEntity>{
+    return this.carsService.findOne(id);
   }
 
   @Post('')
@@ -39,22 +31,22 @@ export class CarsController {
       forbidNonWhitelisted: true,
     })
   )
-  create(@Body() createCarData: CreateCarDTO) : CarInterface {
+  async create(@Body() createCarData: CreateCarDTO) : Promise<CarEntity> {
     return this.carsService.create(createCarData);
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  update(
+  async update(
     @Param('id', ParseIntPipe, CarExistsPipe) id: number,
     @Body() updateCarData: UpdateCarDTO,
-  ): CarInterface {
+  ): Promise<CarEntity> {
     return this.carsService.update(id, updateCarData);
   }
 
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', ParseIntPipe, CarExistsPipe) id: number): void {
-    this.carsService.remove(id);
+  async remove(@Param('id', ParseIntPipe, CarExistsPipe) id: number): Promise<void> {
+    await this.carsService.remove(id);
   }
 }
